@@ -5,6 +5,7 @@ import RequireAuth from './components/RequireAuth'
 
 import BuilderPage        from './pages/BuilderPage'
 import ArmiesPage         from './pages/ArmiesPage'
+import PublicArmyPage     from './pages/PublicArmyPage'
 import StylePage          from './pages/StylePage'
 import LoginPage          from './pages/LoginPage'
 import SignupPage         from './pages/SignupPage'
@@ -26,8 +27,9 @@ export default function App() {
       <AuthProvider>
         <Routes>
           {/* Public */}
-          <Route path="/"     element={<HomePage />} />
-          <Route path="/style" element={<StylePage />} />
+          <Route path="/"                  element={<HomePage />} />
+          <Route path="/style"             element={<StylePage />} />
+          <Route path="/army/:shareToken"  element={<PublicArmyPage />} />
 
           {/* Guest-only — redirect logged-in users away */}
           <Route path="/login"           element={<GuestOnly><LoginPage /></GuestOnly>} />

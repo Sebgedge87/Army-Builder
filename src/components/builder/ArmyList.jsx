@@ -8,7 +8,7 @@ export default function ArmyList({
   onRemoveUnit, onAttachUnit, onDetachUnit,
   totalPoints, pointLimit,
   validation,
-  saving, onSave,
+  saving, onSave, onShare,
 }) {
   const [attachTarget, setAttachTarget] = useState(null)
 
@@ -276,9 +276,12 @@ export default function ArmyList({
             {(totalPoints - pointLimit).toLocaleString()} pts over limit
           </div>
         )}
-        <Button style={{ width: '100%' }} disabled={saving || overLimit} onClick={onSave}>
-          {saving ? 'Saving…' : 'Save Army'}
-        </Button>
+        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+          <Button variant="secondary" style={{ flex: '0 0 auto' }} onClick={onShare}>Share</Button>
+          <Button style={{ flex: 1 }} disabled={saving || overLimit} onClick={onSave}>
+            {saving ? 'Saving…' : 'Save Army'}
+          </Button>
+        </div>
       </div>
     </div>
   )

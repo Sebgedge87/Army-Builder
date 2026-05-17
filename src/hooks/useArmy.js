@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { doc, getDoc, setDoc, addDoc, collection } from 'firebase/firestore'
+import { doc, getDoc, setDoc, addDoc, updateDoc, collection } from 'firebase/firestore'
 import { db } from '../services/firebase'
 import { useAuth } from './useAuth'
 import { validateArmy, checkAttachmentLegality } from '../lib/validation'
@@ -10,12 +10,14 @@ const CFB_SYSTEM = { pointLimit: 6000, systemId: 'cfb' }
 export function useArmy(armyId, allUnits) {
   const { user } = useAuth()
 
-  const [name, setName]       = useState('New Army')
-  const [faction, setFaction] = useState('Evil')
-  const [entries, setEntries] = useState([])
-  const [loading, setLoading] = useState(!!armyId)
-  const [saving, setSaving]   = useState(false)
-  const [savedId, setSavedId] = useState(armyId ?? null)
+  const [name, setName]           = useState('New Army')
+  const [faction, setFaction]     = useState('Evil')
+  const [entries, setEntries]     = useState([])
+  const [isPublic, setIsPublic]   = useState(false)
+  const [shareToken, setShareToken] = useState(null)
+  const [loading, setLoading]     = useState(!!armyId)
+  const [saving, setSaving]       = useState(false)
+  const [savedId, setSavedId]     = useState(armyId ?? null)
 
   useEffect(() => {
     if (!armyId || !allUnits.length) return
@@ -26,6 +28,8 @@ export function useArmy(armyId, allUnits) {
         const data = snap.data()
         setName(data.name ?? 'Untitled Army')
         setFaction(data.faction ?? 'Evil')
+        setIsPublic(data.isPublic ?? false)
+        setShareToken(data.shareToken ?? null)
         const hydrated = (data.units ?? [])
           .map(e => ({ ...e, unit: allUnits.find(u => u.id === e.unitId) ?? null }))
           .filter(e => e.unit)
@@ -87,6 +91,15 @@ export function useArmy(armyId, allUnits) {
     })
   }, [])
 
+  const importArmy = useCallback(({ name: n, faction: f, entries: e }) => {
+    setName(n)
+    setFaction(f)
+    setEntries(e)
+    setSavedId(null)
+    setIsPublic(false)
+    setShareToken(null)
+  }, [])
+
   const save = useCallback(async () => {
     if (!user) return
     setSaving(true)
@@ -104,9 +117,9 @@ export function useArmy(armyId, allUnits) {
         attachedTo:  attachedTo ?? null,
       })),
       totalPoints,
-      isPublic:    false,
-      shareToken:  null,
-      updatedAt:   new Date().toISOString(),
+      isPublic,
+      shareToken,
+      updatedAt: new Date().toISOString(),
     }
     try {
       if (savedId) {
@@ -119,7 +132,19 @@ export function useArmy(armyId, allUnits) {
     } finally {
       setSaving(false)
     }
-  }, [user, name, faction, entries, savedId])
+  }, [user, name, faction, entries, isPublic, shareToken, savedId])
+
+  const togglePublic = useCallback(async () => {
+    if (!savedId) return
+    const newPublic = !isPublic
+    const newToken  = newPublic ? (shareToken ?? crypto.randomUUID().replace(/-/g, '').slice(0, 16)) : shareToken
+    setIsPublic(newPublic)
+    if (newPublic) setShareToken(newToken)
+    await updateDoc(doc(db, 'armies', savedId), {
+      isPublic:   newPublic,
+      shareToken: newPublic ? newToken : null,
+    })
+  }, [savedId, isPublic, shareToken])
 
   const effectiveEntries = useMemo(() =>
     entries.map(entry => {
@@ -137,9 +162,11 @@ export function useArmy(armyId, allUnits) {
     name, setName,
     faction, setFaction,
     entries: effectiveEntries,
+    isPublic, shareToken,
     loading, saving,
     armyId: savedId,
-    addUnit, removeUnit, attachUnit, detachUnit, save,
+    addUnit, removeUnit, attachUnit, detachUnit,
+    importArmy, save, togglePublic,
     validation,
     totalPoints: validation.totalPoints,
   }

@@ -1,0 +1,166 @@
+import { jsPDF } from 'jspdf'
+
+const MARGIN     = 15
+const PAGE_W     = 210
+const PAGE_H     = 297
+const CONTENT_W  = PAGE_W - MARGIN * 2
+const STAT_KEYS  = ['movement', 'melee', 'ranged', 'defence', 'morale', 'wounds']
+const STAT_LBLS  = ['MOV', 'MEL', 'RNG', 'DEF', 'MOR', 'WND']
+const WCOL_W     = [52, 18, 20, 16, 16]
+
+export function exportToPDF(name, faction, entries, totalPoints, pointLimit) {
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+  let y = MARGIN
+
+  function newPageIfNeeded(need = 12) {
+    if (y + need > PAGE_H - MARGIN) { doc.addPage(); y = MARGIN }
+  }
+
+  // ── Title ───────────────────────────────────────────────────────────
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(20)
+  doc.text(name, MARGIN, y)
+  y += 8
+
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(10)
+  doc.setTextColor(100)
+  doc.text(`${faction}  •  ${totalPoints.toLocaleString()} / ${pointLimit.toLocaleString()} pts`, MARGIN, y)
+  doc.setTextColor(0)
+  y += 5
+
+  doc.setDrawColor(80)
+  doc.line(MARGIN, y, PAGE_W - MARGIN, y)
+  y += 7
+
+  // ── Units ────────────────────────────────────────────────────────────
+  const topLevel = entries.filter(e => !e.attachedTo)
+
+  for (const entry of topLevel) {
+    const u   = entry.unit
+    const pts = u.points ? `${u.points} pts` : 'TBC'
+    const meta = [u.race, ...(u.types ?? (u.type ? [u.type] : []))].filter(Boolean).join(' • ')
+
+    newPageIfNeeded(24)
+
+    // Name + pts
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.text(u.name, MARGIN, y)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(139, 38, 53)
+    doc.text(pts, PAGE_W - MARGIN, y, { align: 'right' })
+    doc.setTextColor(0)
+    y += 5
+
+    if (meta) {
+      doc.setFontSize(8)
+      doc.setTextColor(110)
+      doc.text(meta, MARGIN, y)
+      doc.setTextColor(0)
+      y += 4
+    }
+
+    // Stats row
+    const stats  = entry.effectiveStats ?? u.stats ?? {}
+    const colW   = CONTENT_W / 6
+    doc.setFontSize(7)
+    STAT_KEYS.forEach((k, i) => {
+      const x = MARGIN + i * colW
+      doc.setFont('helvetica', 'bold')
+      doc.text(STAT_LBLS[i], x, y)
+      doc.setFont('helvetica', 'normal')
+      doc.text(String(stats[k] ?? '—'), x, y + 4)
+    })
+    y += 11
+
+    // Buff indicator
+    const buffs = (entry.buffSources ?? []).filter(b => b.stat)
+    if (buffs.length) {
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(7)
+      doc.setTextColor(60, 130, 60)
+      doc.text(`Buffs: ${buffs.map(b => `${b.stat.toUpperCase()} ${b.delta > 0 ? '+' : ''}${b.delta} (${b.fromUnit})`).join(', ')}`, MARGIN, y)
+      doc.setTextColor(0)
+      y += 4
+    }
+
+    // Weapons
+    if (u.weapons?.length) {
+      newPageIfNeeded(6 + u.weapons.length * 4)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8)
+      doc.text('Weapons', MARGIN, y)
+      y += 4
+
+      // Headers
+      const headers = ['Name', 'Range', 'Attacks', 'Dmg', 'AP']
+      doc.setFontSize(7)
+      doc.setTextColor(110)
+      let xp = MARGIN + 2
+      headers.forEach((h, i) => { doc.text(h, xp, y); xp += WCOL_W[i] })
+      doc.setTextColor(0)
+      y += 3
+
+      for (const w of u.weapons) {
+        newPageIfNeeded(5)
+        doc.setFont('helvetica', 'normal')
+        const vals = [w.name ?? '—', String(w.range ?? '—'), String(w.attacks ?? '—'), String(w.damage ?? '—'), String(w.armourPiercing ?? '—')]
+        xp = MARGIN + 2
+        vals.forEach((v, i) => { doc.text(v, xp, y); xp += WCOL_W[i] })
+        y += 4
+      }
+    }
+
+    // Special rules
+    if (u.specialRules?.length) {
+      newPageIfNeeded(5)
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(7)
+      doc.setTextColor(80)
+      const text = `Special Rules: ${u.specialRules.join(', ')}`
+      const lines = doc.splitTextToSize(text, CONTENT_W)
+      doc.text(lines, MARGIN, y)
+      doc.setTextColor(0)
+      y += lines.length * 3.5 + 1
+    }
+
+    // Attachments
+    const attachments = (entry.attachments ?? [])
+      .map(id => entries.find(e => e.instanceId === id))
+      .filter(Boolean)
+    for (const a of attachments) {
+      newPageIfNeeded(6)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8)
+      doc.setTextColor(100)
+      const aPts  = a.unit.points ? `${a.unit.points} pts` : 'TBC'
+      const aType = a.unit.attachable?.asAttachment?.attachmentType ?? 'attachment'
+      doc.text(`  └ ${a.unit.name}  (${aType})  —  ${aPts}`, MARGIN + 3, y)
+      doc.setTextColor(0)
+      y += 5
+    }
+
+    // Divider
+    y += 2
+    doc.setDrawColor(200)
+    doc.line(MARGIN, y, PAGE_W - MARGIN, y)
+    doc.setDrawColor(0)
+    y += 5
+  }
+
+  // ── Footer ────────────────────────────────────────────────────────────
+  const pageCount = doc.getNumberOfPages()
+  for (let p = 1; p <= pageCount; p++) {
+    doc.setPage(p)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(7)
+    doc.setTextColor(150)
+    doc.text(`Generated by CFB Army Builder — ${new Date().toLocaleDateString()}`, MARGIN, PAGE_H - 8)
+    if (pageCount > 1) doc.text(`${p} / ${pageCount}`, PAGE_W - MARGIN, PAGE_H - 8, { align: 'right' })
+    doc.setTextColor(0)
+  }
+
+  doc.save(`${name.replace(/[^a-z0-9]/gi, '_')}.pdf`)
+}

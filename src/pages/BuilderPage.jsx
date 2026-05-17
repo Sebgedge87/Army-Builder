@@ -5,6 +5,7 @@ import TopBar from '../components/shell/TopBar'
 import UnitBrowser from '../components/builder/UnitBrowser'
 import UnitDetail, { EmptyDetail } from '../components/builder/UnitDetail'
 import ArmyList from '../components/builder/ArmyList'
+import ShareModal from '../components/builder/ShareModal'
 import { useUnits } from '../hooks/useUnits'
 import { useDebounce } from '../hooks/useDebounce'
 import { useArmy } from '../hooks/useArmy'
@@ -19,9 +20,11 @@ export default function BuilderPage() {
     name, setName,
     faction, setFaction,
     entries,
+    isPublic, shareToken,
     loading: armyLoading,
     saving,
-    addUnit, removeUnit, attachUnit, detachUnit, save,
+    addUnit, removeUnit, attachUnit, detachUnit,
+    importArmy, save, togglePublic,
     validation, totalPoints,
   } = useArmy(armyId, units)
 
@@ -29,6 +32,7 @@ export default function BuilderPage() {
   const [selectedRace, setSelectedRace] = useState('All')
   const [selectedType, setSelectedType] = useState('All')
   const [selectedUnit, setSelectedUnit] = useState(null)
+  const [showShare, setShowShare]       = useState(false)
 
   const debouncedSearch = useDebounce(search, 300)
 
@@ -89,7 +93,6 @@ export default function BuilderPage() {
         overflow: 'hidden',
         background: 'var(--color-border)',
       }}>
-        {/* Left: unit browser */}
         <UnitBrowser
           units={filteredUnits}
           loading={unitsLoading}
@@ -107,12 +110,10 @@ export default function BuilderPage() {
           onSelectUnit={setSelectedUnit}
         />
 
-        {/* Centre: unit detail */}
         <div style={{ background: 'var(--color-bg-base)', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
           {selectedUnit ? <UnitDetail unit={selectedUnit} /> : <EmptyDetail />}
         </div>
 
-        {/* Right: army list */}
         <ArmyList
           name={name}
           onNameChange={setName}
@@ -125,8 +126,26 @@ export default function BuilderPage() {
           validation={validation}
           saving={saving}
           onSave={save}
+          onShare={() => setShowShare(true)}
         />
       </div>
+
+      {showShare && (
+        <ShareModal
+          name={name}
+          faction={faction}
+          entries={entries}
+          totalPoints={totalPoints}
+          pointLimit={POINT_LIMIT}
+          armyId={armyId}
+          isPublic={isPublic}
+          shareToken={shareToken}
+          onTogglePublic={togglePublic}
+          allUnits={units}
+          onImport={importArmy}
+          onClose={() => setShowShare(false)}
+        />
+      )}
     </AppShell>
   )
 }

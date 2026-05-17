@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── helpers ──────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // ── units ─────────────────────────────────────────────────────────
+    // Anyone can read; only admins can write
+    match /units/{unitId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── armies ────────────────────────────────────────────────────────
+    // Owner can read/write their own; public armies readable by anyone via shareToken
+    match /armies/{armyId} {
+      allow read:   if resource.data.userId == request.auth.uid
+                    || (resource.data.isPublic == true);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // ── users ─────────────────────────────────────────────────────────
+    // Each user can only read/write their own doc (except isAdmin is read-only to self)
+    match /users/{userId} {
+      allow read:   if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId)
+                    && !('isAdmin' in request.resource.data.diff(resource.data).affectedKeys());
+    }
+  }
+}

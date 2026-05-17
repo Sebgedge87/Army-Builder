@@ -42,8 +42,22 @@ What does NOT exist yet:
 ### Stack
 - **Frontend:** React 18 + Vite + React Router + (Tailwind OR styled-components — TBD)
 - **Backend:** Firebase (Firestore + Auth + Storage + Cloud Functions + Hosting)
-- **Build target:** SPA on Firebase Hosting
+- **Build target:** **PWA** (installable, offline-capable) on Firebase Hosting
 - **No** Babel-in-browser in production
+
+### PWA requirements
+- Installable on Android + desktop (manifest + icons + service worker). iOS install is best-effort, not a target — no Apple-specific UX work.
+- **Web-first and responsive** — design for browser viewports (375px → 1920px), not native app shells.
+- **Offline-first for read paths:** unit catalogue, saved armies, last-opened army must work with no network
+- Writes (save army, builder edits) queue when offline and sync when reconnected (Firestore offline persistence handles most of this)
+- App shell cached on first load; updates via service worker with "new version available" toast
+- Use `vite-plugin-pwa` + Workbox; do **not** hand-roll the service worker
+- Manifest icons: 192×192, 512×512, plus maskable variant; theme color matches design system primary
+
+### PWA implications — locked
+1. **Admin panel is online-only.** `/admin` routes (Phase 7 — import wizard, editable table, image upload) must check `navigator.onLine` and show a "You're offline — admin requires connection" screen. Reason: bulk imports and image uploads are footguns offline (partial writes, lost uploads, sync conflicts). The user-facing builder remains fully offline-capable.
+2. **Standalone display mode hides browser chrome.** Build an in-app top bar with back/forward only where it would meaningfully replace browser nav — don't reinvent the address bar.
+3. **Use the standard install prompt only.** Implement `beforeinstallprompt` handling for Chromium browsers; if it doesn't fire, just don't show the install button. No browser-sniffing fallbacks.
 
 ### Build order (from `BUILD_PHASES.md`)
 1. Phase 0 — Foundation & Tooling

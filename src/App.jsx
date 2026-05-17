@@ -12,6 +12,9 @@ import SignupPage         from './pages/SignupPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import SettingsPage       from './pages/SettingsPage'
 import AdminPage          from './pages/admin/AdminPage'
+import UnitsTablePage     from './pages/admin/UnitsTablePage'
+import ImportWizardPage   from './pages/admin/ImportWizardPage'
+import UnitFormPage       from './pages/admin/UnitFormPage'
 import HomePage           from './pages/HomePage'
 
 function GuestOnly({ children }) {
@@ -41,7 +44,12 @@ export default function App() {
           <Route path="/builder"          element={<RequireAuth><BuilderPage /></RequireAuth>} />
           <Route path="/builder/:armyId"  element={<RequireAuth><BuilderPage /></RequireAuth>} />
           <Route path="/settings"         element={<RequireAuth><SettingsPage /></RequireAuth>} />
-          <Route path="/admin"            element={<RequireAuth><AdminPage /></RequireAuth>} />
+          <Route path="/admin"            element={<RequireAuth><AdminPage /></RequireAuth>}>
+            <Route index                  element={<UnitsTablePage />} />
+            <Route path="import"          element={<ImportWizardPage />} />
+            <Route path="unit/new"        element={<UnitFormPage />} />
+            <Route path="unit/:unitId"    element={<UnitFormPage />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

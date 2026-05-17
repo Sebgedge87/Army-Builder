@@ -1,0 +1,499 @@
+[
+  {
+    "__EMPTY": "Orc Light Infantry"
+  },
+  {
+    "__EMPTY": "Movement",
+    "__EMPTY_1": "Melee Ability",
+    "__EMPTY_2": "Ranged Ability",
+    "__EMPTY_3": "Defence",
+    "__EMPTY_4": "Morale",
+    "__EMPTY_5": "Wounds",
+    "__EMPTY_6": "Mod",
+    "__EMPTY_7": "Qty"
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 4,
+    "__EMPTY_2": 10,
+    "__EMPTY_3": 6,
+    "__EMPTY_4": 6,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 4,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 4,
+    "__EMPTY_5": 2,
+    "__EMPTY_6": 1
+  },
+  {
+    "__EMPTY": 14,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 16,
+    "__EMPTY_4": 8,
+    "__EMPTY_5": 10,
+    "__EMPTY_6": 54,
+    "__EMPTY_7": 9
+  },
+  {
+    "__EMPTY": "Name",
+    "__EMPTY_2": "Range",
+    "__EMPTY_3": "# of attacks",
+    "__EMPTY_4": "Damage",
+    "__EMPTY_5": "Armour Piercing",
+    "__EMPTY_6": "Pts Cost",
+    "__EMPTY_7": "Total"
+  },
+  {
+    "__EMPTY": "Orcish Swords",
+    "__EMPTY_2": "Melee",
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "-",
+    "__EMPTY_6": 11
+  },
+  {
+    "__EMPTY_2": "Re Roll One Failed Attack Die",
+    "__EMPTY_6": 8
+  },
+  {
+    "__EMPTY": "Evil, Orcs, Infantry"
+  },
+  {
+    "__EMPTY": "Base Size: 40mm x 20mm",
+    "__EMPTY_4": "Total",
+    "__EMPTY_5": 73,
+    "__EMPTY_6": 1,
+    "__EMPTY_7": 657
+  },
+  {
+    "__EMPTY": "Orc Heavy Infantry"
+  },
+  {
+    "__EMPTY": "Movement",
+    "__EMPTY_1": "Melee Ability",
+    "__EMPTY_2": "Ranged Ability",
+    "__EMPTY_3": "Defence",
+    "__EMPTY_4": "Morale",
+    "__EMPTY_5": "Wounds",
+    "__EMPTY_6": "Mod",
+    "__EMPTY_7": "Qty"
+  },
+  {
+    "__EMPTY": 6,
+    "__EMPTY_1": 4,
+    "__EMPTY_2": 10,
+    "__EMPTY_3": 5,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 6,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 5,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 6,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 5,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2,
+    "__EMPTY_6": 1
+  },
+  {
+    "__EMPTY": 12,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 20,
+    "__EMPTY_4": 10,
+    "__EMPTY_5": 10,
+    "__EMPTY_6": 58,
+    "__EMPTY_7": 9
+  },
+  {
+    "__EMPTY": "Name",
+    "__EMPTY_2": "Range",
+    "__EMPTY_3": "# of attacks",
+    "__EMPTY_4": "Damage",
+    "__EMPTY_5": "Armour Piercing",
+    "__EMPTY_6": "Pts Cost",
+    "__EMPTY_7": "Total"
+  },
+  {
+    "__EMPTY": "Orcish Swords",
+    "__EMPTY_2": "Melee",
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "-",
+    "__EMPTY_6": 11
+  },
+  {
+    "__EMPTY_2": "For Every \"0\" In The Original Attack Roll You May Reroll One Failed Attack Roll.",
+    "__EMPTY_6": 2
+  },
+  {
+    "__EMPTY": "Armoured",
+    "__EMPTY_2": "Reroll One Failed Defence Die",
+    "__EMPTY_6": 3
+  },
+  {
+    "__EMPTY": "Evil, Orcs, Infantry"
+  },
+  {
+    "__EMPTY": "Base Size: 40mm x 20mm",
+    "__EMPTY_4": "Total",
+    "__EMPTY_5": 74,
+    "__EMPTY_6": 1,
+    "__EMPTY_7": 666
+  },
+  {
+    "__EMPTY": "Orc Axes"
+  },
+  {
+    "__EMPTY": "Movement",
+    "__EMPTY_1": "Melee Ability",
+    "__EMPTY_2": "Ranged Ability",
+    "__EMPTY_3": "Defence",
+    "__EMPTY_4": "Morale",
+    "__EMPTY_5": "Wounds",
+    "__EMPTY_6": "Mod",
+    "__EMPTY_7": "Qty"
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 4,
+    "__EMPTY_2": 10,
+    "__EMPTY_3": 6,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2,
+    "__EMPTY_6": 1
+  },
+  {
+    "__EMPTY": 14,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 16,
+    "__EMPTY_4": 10,
+    "__EMPTY_5": 10,
+    "__EMPTY_6": 56,
+    "__EMPTY_7": 9
+  },
+  {
+    "__EMPTY": "Name",
+    "__EMPTY_2": "Range",
+    "__EMPTY_3": "# of attacks",
+    "__EMPTY_4": "Damage",
+    "__EMPTY_5": "Armour Piercing",
+    "__EMPTY_6": "Pts Cost",
+    "__EMPTY_7": "Total"
+  },
+  {
+    "__EMPTY": "Orcish Axes",
+    "__EMPTY_2": "Melee",
+    "__EMPTY_3": 2,
+    "__EMPTY_4": 1,
+    "__EMPTY_5": 2,
+    "__EMPTY_6": 15
+  },
+  {
+    "__EMPTY_2": "For Every \"0\" In The Original Attack Roll The Defender Must Reroll One Successful Defence Die.",
+    "__EMPTY_6": 6
+  },
+  {
+    "__EMPTY": "Evil, Orcs, Infantry"
+  },
+  {
+    "__EMPTY": "Base Size: 40mm x 20mm",
+    "__EMPTY_4": "Total",
+    "__EMPTY_5": 77,
+    "__EMPTY_6": 1,
+    "__EMPTY_7": 693
+  },
+  {
+    "__EMPTY": "Spear Orcs"
+  },
+  {
+    "__EMPTY": "Movement",
+    "__EMPTY_1": "Melee Ability",
+    "__EMPTY_2": "Ranged Ability",
+    "__EMPTY_3": "Defence",
+    "__EMPTY_4": "Morale",
+    "__EMPTY_5": "Wounds",
+    "__EMPTY_6": "Mod",
+    "__EMPTY_7": "Qty"
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 4,
+    "__EMPTY_2": 10,
+    "__EMPTY_3": 6,
+    "__EMPTY_4": 6,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 4,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 4,
+    "__EMPTY_5": 2,
+    "__EMPTY_6": 1
+  },
+  {
+    "__EMPTY": 14,
+    "__EMPTY_1": 6,
+    "__EMPTY_2": 0,
+    "__EMPTY_3": 16,
+    "__EMPTY_4": 8,
+    "__EMPTY_5": 10,
+    "__EMPTY_6": 54,
+    "__EMPTY_7": 9
+  },
+  {
+    "__EMPTY_1": "Range",
+    "__EMPTY_2": "Range",
+    "__EMPTY_3": "# of attacks",
+    "__EMPTY_4": "Damage",
+    "__EMPTY_5": "Armour Piercing",
+    "__EMPTY_6": "Pts Cost",
+    "__EMPTY_7": "Total"
+  },
+  {
+    "__EMPTY": "Orcish Spears",
+    "__EMPTY_2": "Melee",
+    "__EMPTY_3": 3,
+    "__EMPTY_4": 1,
+    "__EMPTY_5": 1,
+    "__EMPTY_6": 9
+  },
+  {
+    "__EMPTY_2": " +1 to the number of attacks for each base directly behind the front rank.",
+    "__EMPTY_6": 2
+  },
+  {
+    "__EMPTY_2": "Attacking units lose all charging bonuses when charging this units front.",
+    "__EMPTY_6": 6
+  },
+  {
+    "__EMPTY": "Evil, Orcs, Infantry"
+  },
+  {
+    "__EMPTY": "Base Size: 40mm x 20mm",
+    "__EMPTY_4": "Total",
+    "__EMPTY_5": 71,
+    "__EMPTY_6": 1,
+    "__EMPTY_7": 639
+  },
+  {
+    "__EMPTY": "Orc Archers"
+  },
+  {
+    "__EMPTY": "Movement",
+    "__EMPTY_1": "Melee Ability",
+    "__EMPTY_2": "Ranged Ability",
+    "__EMPTY_3": "Defence",
+    "__EMPTY_4": "Morale",
+    "__EMPTY_5": "Wounds",
+    "__EMPTY_6": "Mod",
+    "__EMPTY_7": "Qty"
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 8,
+    "__EMPTY_2": 5,
+    "__EMPTY_3": 6,
+    "__EMPTY_4": 6,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 2,
+    "__EMPTY_2": 5,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 4,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 7,
+    "__EMPTY_1": 2,
+    "__EMPTY_2": 5,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 4,
+    "__EMPTY_5": 2,
+    "__EMPTY_6": 1
+  },
+  {
+    "__EMPTY": 14,
+    "__EMPTY_1": 2,
+    "__EMPTY_2": 7.5,
+    "__EMPTY_3": 16,
+    "__EMPTY_4": 8,
+    "__EMPTY_5": 10,
+    "__EMPTY_6": 57.5,
+    "__EMPTY_7": 9
+  },
+  {
+    "__EMPTY": "Name",
+    "__EMPTY_2": "Range",
+    "__EMPTY_3": "# of attacks",
+    "__EMPTY_4": "Damage",
+    "__EMPTY_5": "Armour Piercing",
+    "__EMPTY_6": "Pts Cost",
+    "__EMPTY_7": "Total"
+  },
+  {
+    "__EMPTY": "Orcish Bow",
+    "__EMPTY_2": "10\"/20\"",
+    "__EMPTY_3": 3,
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "-",
+    "__EMPTY_6": 14
+  },
+  {
+    "__EMPTY_2": " +1 to the number of attacks for every other base beyond the front rank.",
+    "__EMPTY_6": 4
+  },
+  {
+    "__EMPTY": "Orcish Knife",
+    "__EMPTY_2": "Melee",
+    "__EMPTY_3": 2,
+    "__EMPTY_4": 1,
+    "__EMPTY_6": 7
+  },
+  {
+    "__EMPTY": "Evil, Orcs, Infantry, Ranged"
+  },
+  {
+    "__EMPTY": "Base Size: 40mm x 20mm",
+    "__EMPTY_4": "Total",
+    "__EMPTY_5": 82.5,
+    "__EMPTY_6": 1,
+    "__EMPTY_7": 742.5
+  },
+  {
+    "__EMPTY": "Orc Warg Rider Skirmishers"
+  },
+  {
+    "__EMPTY": "Movement",
+    "__EMPTY_1": "Melee Ability",
+    "__EMPTY_2": "Ranged Ability",
+    "__EMPTY_3": "Defence",
+    "__EMPTY_4": "Morale",
+    "__EMPTY_5": "Wounds",
+    "__EMPTY_7": "Qty"
+  },
+  {
+    "__EMPTY": 10,
+    "__EMPTY_1": 5,
+    "__EMPTY_2": 6,
+    "__EMPTY_3": 6,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 10,
+    "__EMPTY_1": 5,
+    "__EMPTY_2": 4,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2
+  },
+  {
+    "__EMPTY": 10,
+    "__EMPTY_1": 5,
+    "__EMPTY_2": 4,
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 5,
+    "__EMPTY_5": 2,
+    "__EMPTY_6": 1
+  },
+  {
+    "__EMPTY": 20,
+    "__EMPTY_1": 5,
+    "__EMPTY_2": 6,
+    "__EMPTY_3": 16,
+    "__EMPTY_4": 10,
+    "__EMPTY_5": 10,
+    "__EMPTY_6": 67,
+    "__EMPTY_7": 9
+  },
+  {
+    "__EMPTY": "Name",
+    "__EMPTY_2": "Range",
+    "__EMPTY_3": "# of attacks",
+    "__EMPTY_4": "Damage",
+    "__EMPTY_5": "Armour Piercing",
+    "__EMPTY_6": "Pts Cost",
+    "__EMPTY_7": "Total"
+  },
+  {
+    "__EMPTY": "Orcish Bow",
+    "__EMPTY_2": "10\"/20\"",
+    "__EMPTY_3": 3,
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "-",
+    "__EMPTY_6": 12
+  },
+  {
+    "__EMPTY": "Orcish Sword",
+    "__EMPTY_2": "Melee",
+    "__EMPTY_3": 4,
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "-",
+    "__EMPTY_6": 11
+  },
+  {
+    "__EMPTY_2": "For Every \"0\" In The Original Attack Roll You May Reroll One Failed Attack Roll.",
+    "__EMPTY_6": 2
+  },
+  {
+    "__EMPTY": "Evil, Orcs, Cavalry, Ranged"
+  },
+  {
+    "__EMPTY": "Base Size: 20mm x 40mm",
+    "__EMPTY_4": "Total",
+    "__EMPTY_5": 92,
+    "__EMPTY_6": 1,
+    "__EMPTY_7": 828
+  }
+]

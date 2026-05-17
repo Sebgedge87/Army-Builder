@@ -1,0 +1,416 @@
+[
+  {
+    "name": "Orc Light Infantry",
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 6,
+        "morale": 6,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 1
+      },
+      {
+        "movement": 14,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 16,
+        "morale": 8,
+        "wounds": 10,
+        "modifier": 54,
+        "quantity": 9
+      }
+    ],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Swords",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Evil, Orcs, Infantry",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "Base Size: 40mm x 20mm",
+    "totalPoints": 73
+  },
+  {
+    "name": "Orc Heavy Infantry",
+    "variants": [
+      {
+        "movement": 6,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 5,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 6,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 5,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 6,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 5,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 1
+      },
+      {
+        "movement": 12,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 20,
+        "morale": 10,
+        "wounds": 10,
+        "modifier": 58,
+        "quantity": 9
+      }
+    ],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Swords",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Armoured",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Evil, Orcs, Infantry",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "Base Size: 40mm x 20mm",
+    "totalPoints": 74
+  },
+  {
+    "name": "Orc Axes",
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 6,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 1
+      },
+      {
+        "movement": 14,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 16,
+        "morale": 10,
+        "wounds": 10,
+        "modifier": 56,
+        "quantity": 9
+      }
+    ],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Axes",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Evil, Orcs, Infantry",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "Base Size: 40mm x 20mm",
+    "totalPoints": 77
+  },
+  {
+    "name": "Spear Orcs",
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 6,
+        "morale": 6,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 1
+      },
+      {
+        "movement": 14,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 16,
+        "morale": 8,
+        "wounds": 10,
+        "modifier": 54,
+        "quantity": 9
+      }
+    ],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Spears",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Evil, Orcs, Infantry",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "Base Size: 40mm x 20mm",
+    "totalPoints": 71
+  },
+  {
+    "name": "Orc Archers",
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 8,
+        "ranged": 5,
+        "defence": 6,
+        "morale": 6,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 2,
+        "ranged": 5,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 7,
+        "melee": 2,
+        "ranged": 5,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 1
+      },
+      {
+        "movement": 14,
+        "melee": 2,
+        "ranged": 7.5,
+        "defence": 16,
+        "morale": 8,
+        "wounds": 10,
+        "modifier": 57.5,
+        "quantity": 9
+      }
+    ],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Bow",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Knife",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Evil, Orcs, Infantry, Ranged",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "Base Size: 40mm x 20mm",
+    "totalPoints": 82.5
+  },
+  {
+    "name": "Orc Warg Rider Skirmishers",
+    "variants": [
+      {
+        "movement": 10,
+        "melee": 5,
+        "ranged": 6,
+        "defence": 6,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 10,
+        "melee": 5,
+        "ranged": 4,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 1
+      },
+      {
+        "movement": 10,
+        "melee": 5,
+        "ranged": 4,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 1
+      },
+      {
+        "movement": 20,
+        "melee": 5,
+        "ranged": 6,
+        "defence": 16,
+        "morale": 10,
+        "wounds": 10,
+        "modifier": 67,
+        "quantity": 9
+      }
+    ],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Bow",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Orcish Sword",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "",
+    "totalPoints": 0
+  },
+  {
+    "name": "Evil, Orcs, Cavalry, Ranged",
+    "variants": [],
+    "weapons": [],
+    "keywords": [],
+    "baseSize": "Base Size: 20mm x 40mm",
+    "totalPoints": 92
+  }
+]

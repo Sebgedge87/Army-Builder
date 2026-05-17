@@ -2,16 +2,16 @@ import { useState, useMemo } from 'react'
 import AppShell from '../components/shell/AppShell'
 import TopBar from '../components/shell/TopBar'
 import UnitBrowser from '../components/builder/UnitBrowser'
+import UnitDetail, { EmptyDetail } from '../components/builder/UnitDetail'
 import ArmyList from '../components/builder/ArmyList'
-import Stat from '../components/ui/Stat'
-import Tag from '../components/ui/Tag'
-import allUnits from '../../data/all-units.json'
+import { useUnits } from '../hooks/useUnits'
+import { useDebounce } from '../hooks/useDebounce'
 
 const POINT_LIMIT = 6000
-const STAT_KEYS   = ['movement', 'melee', 'ranged', 'defence', 'morale', 'wounds']
-const STAT_LABELS = ['MOV', 'MEL', 'RNG', 'DEF', 'MOR', 'WND']
 
 export default function BuilderPage() {
+  const { units, loading, error } = useUnits()
+
   const [faction, setFaction]           = useState('Evil')
   const [search, setSearch]             = useState('')
   const [selectedRace, setSelectedRace] = useState('All')
@@ -19,25 +19,30 @@ export default function BuilderPage() {
   const [army, setArmy]                 = useState([])
   const [selectedUnit, setSelectedUnit] = useState(null)
 
+  const debouncedSearch = useDebounce(search, 300)
+
   const races = useMemo(() => {
-    const r = [...new Set(allUnits.map(u => u.race).filter(Boolean))].sort()
+    const r = [...new Set(units.map(u => u.race).filter(Boolean))].sort()
     return ['All', ...r]
-  }, [])
+  }, [units])
 
   const types = useMemo(() => {
-    const t = [...new Set(allUnits.map(u => u.type).filter(Boolean))].sort()
+    const t = [...new Set(units.flatMap(u => u.types ?? (u.type ? [u.type] : [])).filter(Boolean))].sort()
     return ['All', ...t]
-  }, [])
+  }, [units])
 
   const filteredUnits = useMemo(() =>
-    allUnits.filter(u => {
+    units.filter(u => {
       if (u.faction !== faction && u.faction !== 'Mercenary') return false
       if (selectedRace !== 'All' && u.race !== selectedRace) return false
-      if (selectedType !== 'All' && u.type !== selectedType) return false
-      if (search && !u.name.toLowerCase().includes(search.toLowerCase())) return false
+      if (selectedType !== 'All') {
+        const uTypes = u.types ?? (u.type ? [u.type] : [])
+        if (!uTypes.includes(selectedType)) return false
+      }
+      if (debouncedSearch && !u.name.toLowerCase().includes(debouncedSearch.toLowerCase())) return false
       return true
     }),
-    [faction, search, selectedRace, selectedType]
+    [units, faction, debouncedSearch, selectedRace, selectedType]
   )
 
   const totalPoints = army.reduce((sum, e) => sum + (e.unit.points || 0), 0)
@@ -54,6 +59,17 @@ export default function BuilderPage() {
   return (
     <AppShell>
       <TopBar />
+      {error && (
+        <div style={{
+          padding: 'var(--space-2) var(--space-4)',
+          background: '#2a1f00',
+          borderBottom: '1px solid #5a4000',
+          fontSize: 'var(--font-size-sm)',
+          color: '#c8a040',
+        }}>
+          {error}
+        </div>
+      )}
       <div
         style={{
           flex: 1,
@@ -67,6 +83,7 @@ export default function BuilderPage() {
         {/* Left: unit browser */}
         <UnitBrowser
           units={filteredUnits}
+          loading={loading}
           faction={faction}
           onFactionChange={setFaction}
           search={search}
@@ -78,6 +95,7 @@ export default function BuilderPage() {
           onTypeChange={setSelectedType}
           types={types}
           onAddUnit={addUnit}
+          onSelectUnit={setSelectedUnit}
         />
 
         {/* Centre: unit detail */}
@@ -99,125 +117,4 @@ export default function BuilderPage() {
       </div>
     </AppShell>
   )
-}
-
-function EmptyDetail() {
-  return (
-    <div
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'var(--color-text-secondary)',
-        gap: 'var(--space-3)',
-        padding: 'var(--space-6)',
-      }}
-    >
-      <div style={{ fontSize: 48, opacity: 0.3 }}>⚔</div>
-      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--color-text-tertiary)' }}>
-        Select a unit to view details
-      </div>
-      <div style={{ fontSize: 'var(--font-size-base)' }}>
-        Click any unit in the browser to inspect it, or add it to your army
-      </div>
-    </div>
-  )
-}
-
-function UnitDetail({ unit }) {
-  return (
-    <div style={{ padding: 'var(--space-6)', flex: 1 }}>
-      {/* Name + meta */}
-      <div style={{ marginBottom: 'var(--space-5)' }}>
-        <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, marginBottom: 'var(--space-1)' }}>
-          {unit.name}
-        </h1>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-          {unit.faction && <Tag accent>{unit.faction}</Tag>}
-          {unit.race    && <Tag>{unit.race}</Tag>}
-          {unit.type    && <Tag>{unit.type}</Tag>}
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div style={{ marginBottom: 'var(--space-5)' }}>
-        <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 'var(--space-3)' }}>
-          Stats
-        </div>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-            gap: 'var(--space-2)',
-            padding: 'var(--space-4)',
-            background: 'var(--color-bg-surface)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--color-border)',
-          }}
-        >
-          {STAT_KEYS.map((key, i) => (
-            <Stat key={key} label={STAT_LABELS[i]} value={unit.stats?.[key] ?? '—'} size="lg" />
-          ))}
-        </div>
-      </div>
-
-      {/* Weapons */}
-      {unit.weapons?.length > 0 && (
-        <div style={{ marginBottom: 'var(--space-5)' }}>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 'var(--space-3)' }}>
-            Weapons
-          </div>
-          <div style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--font-size-base)' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid var(--color-border)' }}>
-                  {['Name', 'Range', 'Attacks', 'Damage', 'AP'].map(h => (
-                    <th key={h} style={{ padding: '8px var(--space-3)', textAlign: 'left', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {unit.weapons.map((w, i) => (
-                  <tr key={i} style={{ borderBottom: i < unit.weapons.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
-                    <td style={tdStyle}>{w.name}</td>
-                    <td style={tdStyle}>{w.range}</td>
-                    <td style={tdStyle}>{w.attacks}</td>
-                    <td style={tdStyle}>{w.damage}</td>
-                    <td style={tdStyle}>{w.armourPiercing}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Keywords */}
-      {unit.keywords?.length > 0 && (
-        <div style={{ marginBottom: 'var(--space-5)' }}>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 'var(--space-3)' }}>
-            Keywords
-          </div>
-          <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            {unit.keywords.map(k => <Tag key={k}>{k}</Tag>)}
-          </div>
-        </div>
-      )}
-
-      {/* Points */}
-      <div style={{ marginTop: 'auto', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--color-border)' }}>
-        <span style={{ fontSize: 'var(--font-size-base)', color: 'var(--color-text-secondary)' }}>Points cost: </span>
-        <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--color-accent)' }}>
-          {unit.points ? `${unit.points} pts` : 'TBC'}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-const tdStyle = {
-  padding: '8px var(--space-3)',
-  color: 'var(--color-text-primary)',
 }

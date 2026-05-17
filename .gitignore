@@ -47,3 +47,7 @@ yarn-error.log*
 
 # Claude Code
 .claude/settings.local.json
+
+# Firebase Admin (seed script credentials — never commit)
+service-account.json
+scripts/service-account.json

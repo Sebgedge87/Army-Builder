@@ -7,6 +7,7 @@ const STAT_LABELS = ['MOV', 'MEL', 'RNG', 'DEF', 'MOR', 'WND']
 
 export default function UnitBrowser({
   units,
+  loading,
   faction,
   onFactionChange,
   search,
@@ -18,6 +19,7 @@ export default function UnitBrowser({
   onTypeChange,
   types,
   onAddUnit,
+  onSelectUnit,
 }) {
   const [hoveredId, setHoveredId] = useState(null)
 
@@ -29,7 +31,7 @@ export default function UnitBrowser({
           Unit Browser
         </div>
         <div style={{ fontSize: 'var(--font-size-base)', color: 'var(--color-text-secondary)' }}>
-          {units.length} units available
+          {loading ? 'Loading…' : `${units.length} units available`}
         </div>
       </div>
 
@@ -100,7 +102,11 @@ export default function UnitBrowser({
 
       {/* Unit list */}
       <div style={{ flex: 1, overflow: 'auto', padding: 'var(--space-3)' }}>
-        {units.length === 0 ? (
+        {loading ? (
+          <div style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-base)', textAlign: 'center', padding: 'var(--space-6)' }}>
+            Loading units…
+          </div>
+        ) : units.length === 0 ? (
           <div style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-base)', textAlign: 'center', padding: 'var(--space-6)' }}>
             No units match your filters
           </div>
@@ -108,7 +114,7 @@ export default function UnitBrowser({
           units.map(unit => (
             <div
               key={unit.id}
-              onClick={() => onAddUnit(unit)}
+              onClick={() => { onSelectUnit?.(unit); onAddUnit(unit) }}
               onMouseEnter={() => setHoveredId(unit.id)}
               onMouseLeave={() => setHoveredId(null)}
               style={{
@@ -125,7 +131,7 @@ export default function UnitBrowser({
                 {unit.name}
               </div>
               <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-2)' }}>
-                {[unit.race, unit.type].filter(Boolean).join(' • ')}
+                {[unit.race, ...(unit.types ?? (unit.type ? [unit.type] : []))].filter(Boolean).join(' • ')}
               </div>
               <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-2)' }}>
                 {STAT_KEYS.map((key, i) => (

@@ -4,6 +4,7 @@ import { useAuth } from './hooks/useAuth'
 import RequireAuth from './components/RequireAuth'
 
 import BuilderPage        from './pages/BuilderPage'
+import ArmiesPage         from './pages/ArmiesPage'
 import StylePage          from './pages/StylePage'
 import LoginPage          from './pages/LoginPage'
 import SignupPage         from './pages/SignupPage'
@@ -34,9 +35,11 @@ export default function App() {
           <Route path="/forgot-password" element={<GuestOnly><ForgotPasswordPage /></GuestOnly>} />
 
           {/* Protected */}
-          <Route path="/builder"  element={<RequireAuth><BuilderPage /></RequireAuth>} />
-          <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
-          <Route path="/admin"    element={<RequireAuth><AdminPage /></RequireAuth>} />
+          <Route path="/armies"           element={<RequireAuth><ArmiesPage /></RequireAuth>} />
+          <Route path="/builder"          element={<RequireAuth><BuilderPage /></RequireAuth>} />
+          <Route path="/builder/:armyId"  element={<RequireAuth><BuilderPage /></RequireAuth>} />
+          <Route path="/settings"         element={<RequireAuth><SettingsPage /></RequireAuth>} />
+          <Route path="/admin"            element={<RequireAuth><AdminPage /></RequireAuth>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

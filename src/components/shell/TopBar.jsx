@@ -3,8 +3,9 @@ import { useAuth } from '../../hooks/useAuth'
 import Button from '../ui/Button'
 
 const NAV_LINKS = [
-  { to: '/builder',  label: 'Builder'  },
-  { to: '/settings', label: 'Settings' },
+  { to: '/armies',   label: 'My Armies' },
+  { to: '/builder',  label: 'Builder'   },
+  { to: '/settings', label: 'Settings'  },
 ]
 
 export default function TopBar() {

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 import AppShell from '../components/shell/AppShell'
 import TopBar from '../components/shell/TopBar'
 import UnitBrowser from '../components/builder/UnitBrowser'
@@ -6,17 +7,27 @@ import UnitDetail, { EmptyDetail } from '../components/builder/UnitDetail'
 import ArmyList from '../components/builder/ArmyList'
 import { useUnits } from '../hooks/useUnits'
 import { useDebounce } from '../hooks/useDebounce'
+import { useArmy } from '../hooks/useArmy'
 
 const POINT_LIMIT = 6000
 
 export default function BuilderPage() {
-  const { units, loading, error } = useUnits()
+  const { armyId }                      = useParams()
+  const { units, loading: unitsLoading, error: unitsError } = useUnits()
 
-  const [faction, setFaction]           = useState('Evil')
+  const {
+    name, setName,
+    faction, setFaction,
+    entries,
+    loading: armyLoading,
+    saving,
+    addUnit, removeUnit, attachUnit, detachUnit, save,
+    validation, totalPoints,
+  } = useArmy(armyId, units)
+
   const [search, setSearch]             = useState('')
   const [selectedRace, setSelectedRace] = useState('All')
   const [selectedType, setSelectedType] = useState('All')
-  const [army, setArmy]                 = useState([])
   const [selectedUnit, setSelectedUnit] = useState(null)
 
   const debouncedSearch = useDebounce(search, 300)
@@ -45,21 +56,21 @@ export default function BuilderPage() {
     [units, faction, debouncedSearch, selectedRace, selectedType]
   )
 
-  const totalPoints = army.reduce((sum, e) => sum + (e.unit.points || 0), 0)
-
-  function addUnit(unit) {
-    setArmy(prev => [...prev, { instanceId: crypto.randomUUID(), unit }])
-    setSelectedUnit(unit)
-  }
-
-  function removeUnit(instanceId) {
-    setArmy(prev => prev.filter(e => e.instanceId !== instanceId))
+  if (armyLoading && armyId) {
+    return (
+      <AppShell>
+        <TopBar />
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}>
+          Loading army…
+        </div>
+      </AppShell>
+    )
   }
 
   return (
     <AppShell>
       <TopBar />
-      {error && (
+      {unitsError && (
         <div style={{
           padding: 'var(--space-2) var(--space-4)',
           background: '#2a1f00',
@@ -67,23 +78,21 @@ export default function BuilderPage() {
           fontSize: 'var(--font-size-sm)',
           color: '#c8a040',
         }}>
-          {error}
+          {unitsError}
         </div>
       )}
-      <div
-        style={{
-          flex: 1,
-          display: 'grid',
-          gridTemplateColumns: '360px 1fr 340px',
-          gap: '1px',
-          overflow: 'hidden',
-          background: 'var(--color-border)',
-        }}
-      >
+      <div style={{
+        flex: 1,
+        display: 'grid',
+        gridTemplateColumns: '360px 1fr 340px',
+        gap: '1px',
+        overflow: 'hidden',
+        background: 'var(--color-border)',
+      }}>
         {/* Left: unit browser */}
         <UnitBrowser
           units={filteredUnits}
-          loading={loading}
+          loading={unitsLoading}
           faction={faction}
           onFactionChange={setFaction}
           search={search}
@@ -94,25 +103,28 @@ export default function BuilderPage() {
           selectedType={selectedType}
           onTypeChange={setSelectedType}
           types={types}
-          onAddUnit={addUnit}
+          onAddUnit={unit => { addUnit(unit); setSelectedUnit(unit) }}
           onSelectUnit={setSelectedUnit}
         />
 
         {/* Centre: unit detail */}
         <div style={{ background: 'var(--color-bg-base)', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
-          {selectedUnit ? (
-            <UnitDetail unit={selectedUnit} />
-          ) : (
-            <EmptyDetail />
-          )}
+          {selectedUnit ? <UnitDetail unit={selectedUnit} /> : <EmptyDetail />}
         </div>
 
         {/* Right: army list */}
         <ArmyList
-          army={army}
+          name={name}
+          onNameChange={setName}
+          entries={entries}
           onRemoveUnit={removeUnit}
+          onAttachUnit={attachUnit}
+          onDetachUnit={detachUnit}
           totalPoints={totalPoints}
           pointLimit={POINT_LIMIT}
+          validation={validation}
+          saving={saving}
+          onSave={save}
         />
       </div>
     </AppShell>

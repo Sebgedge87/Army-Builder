@@ -5,25 +5,53 @@ Each phase has: scope → deliverables → logic/contracts → done criteria.
 
 ---
 
-## Phase 0 — Foundation & Tooling
-*Goal: leave the prototype, enter a real codebase.*
+## Phase 0 — Foundation & Tooling (PWA)
+*Goal: leave the prototype, enter a real codebase. Ship as an installable PWA from day one.*
 
 **Scope**
 - Convert the Babel-in-browser prototype into a real Vite + React 18 project
 - Set up repo structure, ESLint/Prettier, Git branching, env files
-- Pick & wire backend SDK (Firebase recommended per `TECH_STACK.md`) — **including Storage**
-- Decide hosting target (Firebase Hosting vs Vercel)
+- Pick & wire backend SDK (Firebase — Auth, Firestore, Storage, Hosting, Functions)
+- **PWA setup**: `vite-plugin-pwa` + Workbox, manifest, icons, service worker
 
 **Deliverables**
-- `package.json`, `vite.config.js`, `.env.example`
+- `package.json`, `vite.config.js` (with `VitePWA` configured), `.env.example`
 - `/src` skeleton: `components/`, `hooks/`, `services/`, `pages/`, `lib/`
 - React Router installed with placeholder routes: `/`, `/login`, `/signup`, `/builder`, `/settings`, `/admin`
 - Design tokens extracted to `src/theme.css` (colors, spacing, type) from the prototype
+- `public/manifest.webmanifest` — name, short_name, theme_color, background_color, display: standalone, icons (192, 512, maskable)
+- `public/icons/` — 192, 512, maskable PNGs derived from a single source SVG
+- Service worker via Workbox: precache app shell, runtime-cache Firestore/Storage GETs
+- Install prompt component (`components/pwa/InstallPrompt.jsx`) with deferred-prompt handling
+- Update toast (`components/pwa/UpdateAvailable.jsx`) when a new SW activates
+- Firestore offline persistence enabled in `services/firebase.js`
 
 **Logic / contracts**
-- `services/firebase.js` — exports `auth`, `db`, `storage`
+- `services/firebase.js` — exports `auth`, `db`, `storage`; enables `enableIndexedDbPersistence`
 - `services/storage.js` — `uploadImage`, `getImageUrl`, `deleteImage` helpers
+- `services/pwa.js` — `registerSW()`, `onUpdateAvailable(cb)`, `promptInstall()`
 - `lib/types.ts` (or JSDoc) — `Unit`, `Army`, `User`, `SystemManifest`, `Attachment`
+
+**PWA caching strategy (Workbox)**
+- App shell (HTML/JS/CSS): **precache**, stale-while-revalidate
+- Firestore reads: handled by Firestore SDK offline persistence (IndexedDB), not Workbox
+- Storage images: **cache-first**, 30-day expiry, max 200 entries — thumb + card sizes; `full` loads from network on demand
+- Fonts: **cache-first**, 1-year expiry
+
+**PWA implications (must implement)**
+- **Standalone display mode:** browser chrome is hidden when installed. The app shell's top bar is the only navigation surface — don't add a redundant address bar.
+- **Install prompt:** standard `beforeinstallprompt` only. If it doesn't fire (Firefox, Safari, etc.), don't show the install button. No browser-sniffing fallbacks.
+- **Update toast UX:** "Update available · Reload" button. New SW activates only on user click (skipWaiting on user gesture), so we don't yank state mid-edit.
+- **Responsive breakpoints:** mobile 375px, tablet 768px, desktop 1280px. Builder layouts (compact/cards/tactical) collapse to a single mobile-friendly stack below 768px.
+
+**Done when**
+- `npm run dev` boots a blank app with the routes navigating
+- `npm run build && npm run preview` serves a working PWA
+- Lighthouse PWA score ≥ 90 (installable, has SW, offline fallback)
+- Can install to home screen on Android Chrome + desktop Chrome/Edge
+- Going offline after first load: app shell still loads, last-fetched units still render
+- New deploy triggers "Update available" toast within ~minutes
+- Responsive from 375px → 1920px with no horizontal scroll
 
 **Done when**
 - `npm run dev` boots a blank app with the routes navigating
@@ -370,6 +398,7 @@ applyBuffs(host, attachments) => {
 
 **Scope**
 - Admin-only route `/admin` (gated by `users/{uid}.isAdmin == true`)
+- **Online-only** — `/admin` checks `navigator.onLine` on mount and on every action. If offline, render an "Admin requires an internet connection" screen. Reason: bulk imports + image uploads partially failing offline cause silent data loss.
 - **Import Wizard** (CSV or JSON) — multi-step flow
 - **Editable Units Table** — primary workspace; spreadsheet-style edits with inline validation
 - **Image Storage** — drag/drop image folder, auto-match to units, auto-resize

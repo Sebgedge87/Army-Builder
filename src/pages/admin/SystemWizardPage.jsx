@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { db } from '../../services/firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { db, storage } from '../../services/firebase'
 import Button from '../../components/ui/Button'
 
 const INIT = {
@@ -14,6 +15,7 @@ const INIT = {
     accentColor:      '#8b2635',
     accentHoverColor: '#a02d40',
     appName:          '',
+    logoUrl:          '',
   },
   rules: {
     pointLimit:            6000,
@@ -25,7 +27,9 @@ const INIT = {
   statDefinitions: [
     { id: 'stat1', name: 'Stat 1', shortName: 'ST1', label: 'Stat 1 (ST1)' },
   ],
-  saving: false,
+  saving:    false,
+  uploading: false,
+  error:     '',
 }
 
 export default function SystemWizardPage() {
@@ -34,6 +38,25 @@ export default function SystemWizardPage() {
   const isNew        = !systemId || systemId === 'new'
   const [s, setS]    = useState(INIT)
   const upd = patch => setS(prev => ({ ...prev, ...patch }))
+  const fileInputRef = useRef(null)
+
+  async function uploadLogo(file) {
+    if (!file) return
+    const id = isNew
+      ? (s.systemId || s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+      : systemId
+    if (!id) { upd({ error: 'Set a system name in Step 1 first so we know where to store the logo.' }); return }
+    const ext = file.name.split('.').pop()
+    upd({ uploading: true })
+    try {
+      const storageRef = ref(storage, `systems/${id}/logo.${ext}`)
+      await uploadBytes(storageRef, file)
+      const url = await getDownloadURL(storageRef)
+      upd({ branding: { ...s.branding, logoUrl: url } })
+    } finally {
+      upd({ uploading: false })
+    }
+  }
 
   useEffect(() => {
     if (isNew) return
@@ -58,7 +81,7 @@ export default function SystemWizardPage() {
     const id = isNew
       ? (s.systemId || s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
       : systemId
-    if (!id) { alert('System ID is required'); return }
+    if (!id) { upd({ error: 'System ID is required — set a name or slug in Step 1.', step: 1 }); return }
     upd({ saving: true })
     try {
       await setDoc(doc(db, 'systems', id), {
@@ -98,7 +121,7 @@ export default function SystemWizardPage() {
           const done   = n < s.step
           const active = n === s.step
           return (
-            <div key={n} style={{ display: 'flex', alignItems: 'center', gap: 6, marginRight: 'var(--space-3)', cursor: 'pointer' }} onClick={() => upd({ step: n })}>
+            <div key={n} style={{ display: 'flex', alignItems: 'center', gap: 6, marginRight: 'var(--space-3)', cursor: 'pointer' }} onClick={() => upd({ step: n, error: '' })}>
               <div style={{
                 width: 22, height: 22, borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -112,6 +135,13 @@ export default function SystemWizardPage() {
           )
         })}
       </div>
+
+      {/* Inline error notice */}
+      {s.error && (
+        <div style={{ padding: 'var(--space-2) var(--space-3)', background: 'rgba(139,38,53,0.1)', border: '1px solid rgba(139,38,53,0.3)', borderRadius: 'var(--radius-md)', color: '#e05a6a', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-4)' }}>
+          {s.error}
+        </div>
+      )}
 
       {/* Step 1 — Identity */}
       {s.step === 1 && (
@@ -142,13 +172,62 @@ export default function SystemWizardPage() {
               style={textareaStyle}
             />
           </WizField>
-          <NavRow onNext={() => upd({ step: 2 })} nextLabel="Branding →" />
+          <NavRow onNext={() => upd({ step: 2, error: '' })} nextLabel="Branding →" />
         </WizSection>
       )}
 
       {/* Step 2 — Branding */}
       {s.step === 2 && (
         <WizSection label="Branding">
+          {/* Logo upload */}
+          <WizField label="System Logo">
+            <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+              {/* Preview */}
+              <div style={{
+                width: 80, height: 80, flexShrink: 0,
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--color-bg-surface)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
+              }}>
+                {s.branding.logoUrl
+                  ? <img src={s.branding.logoUrl} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  : <span style={{ fontSize: 28, opacity: 0.3 }}>🖼</span>
+                }
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={e => uploadLogo(e.target.files?.[0])}
+                />
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={s.uploading}
+                >
+                  {s.uploading ? 'Uploading…' : s.branding.logoUrl ? 'Replace Logo' : 'Upload Logo'}
+                </Button>
+                {s.branding.logoUrl && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => upd({ branding: { ...s.branding, logoUrl: '' } })}
+                  >
+                    Remove
+                  </Button>
+                )}
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
+                  PNG, SVG, or WebP recommended. Used in the app header and browser tab favicon.
+                </span>
+              </div>
+            </div>
+          </WizField>
+
           <WizRow>
             <WizField label="Accent Colour" style={{ flex: 1 }}>
               <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
@@ -178,8 +257,12 @@ export default function SystemWizardPage() {
           </WizField>
           <div style={{ padding: 'var(--space-3)', background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
             Preview: <span style={{ color: s.branding.accentColor, fontWeight: 700 }}>■</span> {s.branding.accentColor}
+            <br />
+            <span style={{ opacity: 0.7, marginTop: 4, display: 'block' }}>
+              PWA home-screen icons (when installed) are baked at build time — replace <code>public/icons/*.png</code> before running <code>npm run deploy</code>.
+            </span>
           </div>
-          <NavRow onBack={() => upd({ step: 1 })} onNext={() => upd({ step: 3 })} nextLabel="Stats →" />
+          <NavRow onBack={() => upd({ step: 1, error: '' })} onNext={() => upd({ step: 3, error: '' })} nextLabel="Stats →" />
         </WizSection>
       )}
 
@@ -212,7 +295,7 @@ export default function SystemWizardPage() {
           <Button size="sm" variant="secondary" onClick={() => upd({ statDefinitions: [...s.statDefinitions, { id: '', name: '', shortName: '', label: '' }] })}>
             + Add Stat
           </Button>
-          <NavRow onBack={() => upd({ step: 2 })} onNext={() => upd({ step: 4 })} nextLabel="Factions →" />
+          <NavRow onBack={() => upd({ step: 2, error: '' })} onNext={() => upd({ step: 4, error: '' })} nextLabel="Factions →" />
         </WizSection>
       )}
 
@@ -255,7 +338,7 @@ export default function SystemWizardPage() {
           </div>
 
           <NavRow
-            onBack={() => upd({ step: 3 })}
+            onBack={() => upd({ step: 3, error: '' })}
             onNext={handleSave}
             nextLabel={s.saving ? 'Saving…' : (isNew ? 'Create System' : 'Save Changes')}
             nextDisabled={s.saving}

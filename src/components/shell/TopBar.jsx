@@ -33,9 +33,19 @@ export default function TopBar() {
       }}
     >
       {/* Logo */}
-      <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, letterSpacing: '-0.5px', flexShrink: 0 }}>
-        ⚔ {system.shortName ?? system.name}
-      </span>
+      {system.branding?.logoUrl
+        ? (
+          <img
+            src={system.branding.logoUrl}
+            alt={system.shortName ?? system.name}
+            style={{ height: 32, maxWidth: 140, objectFit: 'contain', flexShrink: 0 }}
+          />
+        ) : (
+          <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, letterSpacing: '-0.5px', flexShrink: 0 }}>
+            ⚔ {system.shortName ?? system.name}
+          </span>
+        )
+      }
 
       {/* Nav links */}
       <nav style={{ display: 'flex', gap: 'var(--space-1)', flex: 1 }}>

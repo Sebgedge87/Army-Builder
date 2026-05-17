@@ -34,6 +34,7 @@ const INIT = {
   mode:       'upsert',
   diff:       null,
   committing: false,
+  error:      '',
 }
 
 export default function ImportWizardPage() {
@@ -65,10 +66,18 @@ export default function ImportWizardPage() {
   function handleJSONText(text) {
     try {
       const parsed = JSON.parse(text)
-      const arr = Array.isArray(parsed) ? parsed : parsed.units ?? []
-      upd({ source: 'json', rawText: text, mappedRows: arr, headers: [], fieldMap: {} })
+      const arr = Array.isArray(parsed) ? parsed : parsed.units ?? null
+      if (arr === null || arr.length === 0) {
+        if (parsed.systemId || parsed.statDefinitions || parsed.factions) {
+          upd({ error: 'This is a system manifest, not a unit list. To configure a game system go to Admin → Systems.' })
+        } else {
+          upd({ error: 'No units found. Paste a JSON array of units, or an object with a "units" key.' })
+        }
+        return
+      }
+      upd({ source: 'json', rawText: text, mappedRows: arr, headers: [], fieldMap: {}, error: '' })
     } catch {
-      alert('Invalid JSON')
+      upd({ error: 'Invalid JSON — check that your JSON is valid.' })
     }
   }
 
@@ -116,14 +125,44 @@ export default function ImportWizardPage() {
       {s.step === 1 && (
         <Step1
           onFile={handleFile}
-          onPaste={text => { upd({ rawText: text }) }}
           onJSONPaste={() => handleJSONText(s.rawText)}
           rawText={s.rawText}
-          onRawTextChange={t => upd({ rawText: t })}
+          onRawTextChange={t => upd({ rawText: t, error: '' })}
+          error={s.error}
           onNext={() => {
-            if (!s.mappedRows.length) { alert('Upload or paste a file first'); return }
-            upd({ step: s.source === 'csv' ? 2 : 3 })
-            if (s.source !== 'csv') runValidation(s.mappedRows)
+            // Auto-parse pasted text if Parse JSON wasn't clicked manually
+            let rows = s.mappedRows
+            let source = s.source
+            if (!rows.length && s.rawText.trim()) {
+              try {
+                const parsed = JSON.parse(s.rawText)
+                const arr = Array.isArray(parsed) ? parsed : parsed.units ?? null
+                if (arr === null || arr.length === 0) {
+                  if (parsed.systemId || parsed.statDefinitions || parsed.factions) {
+                    upd({ error: 'This is a system manifest, not a unit list. To configure a game system go to Admin → Systems.' })
+                  } else {
+                    upd({ error: 'No units found. Paste a JSON array of units, or an object with a "units" key.' })
+                  }
+                  return
+                }
+                rows = arr
+                source = 'json'
+              } catch {
+                upd({ error: 'Invalid JSON — check that your JSON is valid.' })
+                return
+              }
+            }
+            if (!rows.length) {
+              upd({ error: 'Upload or paste a file or paste a JSON array of units.' })
+              return
+            }
+            if (source === 'csv') {
+              upd({ mappedRows: rows, source, error: '', step: 2 })
+            } else {
+              const normed = rows.map(r => normaliseRow(r, system))
+              const results = validateRows(normed, system)
+              upd({ mappedRows: normed, source, results, error: '', step: 3 })
+            }
           }}
         />
       )}
@@ -132,6 +171,7 @@ export default function ImportWizardPage() {
         <Step2
           headers={s.headers}
           fieldMap={s.fieldMap}
+          unitFields={UNIT_FIELDS}
           sampleRows={s.mappedRows.slice(0, 3)}
           onChange={(h, val) => upd({ fieldMap: { ...s.fieldMap, [h]: val } })}
           onBack={() => upd({ step: 1 })}
@@ -216,7 +256,7 @@ function StepBar({ current }) {
   )
 }
 
-function Step1({ onFile, rawText, onRawTextChange, onJSONPaste, onNext }) {
+function Step1({ onFile, rawText, onRawTextChange, onJSONPaste, onNext, error }) {
   return (
     <div>
       <SH>Step 1 — Choose Source</SH>
@@ -238,12 +278,17 @@ function Step1({ onFile, rawText, onRawTextChange, onJSONPaste, onNext }) {
         />
         <Button size="sm" variant="secondary" style={{ marginTop: 'var(--space-2)' }} onClick={onJSONPaste}>Parse JSON</Button>
       </div>
+      {error && (
+        <div style={{ padding: 'var(--space-2) var(--space-3)', background: 'rgba(139,38,53,0.1)', border: '1px solid rgba(139,38,53,0.3)', borderRadius: 'var(--radius-md)', color: '#e05a6a', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
+          {error}
+        </div>
+      )}
       <Button onClick={onNext}>Next →</Button>
     </div>
   )
 }
 
-function Step2({ headers, fieldMap, sampleRows, onChange, onBack, onNext }) {
+function Step2({ headers, fieldMap, unitFields, sampleRows, onChange, onBack, onNext }) {
   return (
     <div>
       <SH>Step 2 — Field Mapping</SH>
@@ -264,7 +309,7 @@ function Step2({ headers, fieldMap, sampleRows, onChange, onBack, onNext }) {
               <td style={tdStyle2}><code style={{ fontSize: 'var(--font-size-xs)', background: 'var(--color-bg-hover)', padding: '2px 5px', borderRadius: 3 }}>{h}</code></td>
               <td style={tdStyle2}>
                 <select value={fieldMap[h] ?? 'ignore'} onChange={e => onChange(h, e.target.value)} style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-text-primary)', padding: '3px 6px', fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-sm)', outline: 'none' }}>
-                  {UNIT_FIELDS.map(f => <option key={f.key} value={f.key}>{f.label}</option>)}
+                  {unitFields.map(f => <option key={f.key} value={f.key}>{f.label}</option>)}
                 </select>
               </td>
               {sampleRows.map((row, i) => <td key={i} style={{ ...tdStyle2, color: 'var(--color-text-secondary)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row[h] ?? ''}</td>)}

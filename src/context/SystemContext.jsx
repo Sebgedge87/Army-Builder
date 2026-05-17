@@ -41,6 +41,15 @@ function applyBranding(b = {}) {
   const root = document.documentElement
   if (b.accentColor)      root.style.setProperty('--color-accent',       b.accentColor)
   if (b.accentHoverColor) root.style.setProperty('--color-accent-hover', b.accentHoverColor)
+  if (b.logoUrl) {
+    let link = document.querySelector("link[rel~='icon']")
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'icon'
+      document.head.appendChild(link)
+    }
+    link.href = b.logoUrl
+  }
 }
 
 export function SystemProvider({ systemId = import.meta.env.VITE_SYSTEM_ID ?? 'cfb', children }) {

@@ -31,7 +31,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <SystemProvider systemId="cfb">
+        <SystemProvider systemId={import.meta.env.VITE_SYSTEM_ID ?? 'cfb'}>
           <Routes>
             {/* Public */}
             <Route path="/"                  element={<HomePage />} />

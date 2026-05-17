@@ -43,7 +43,7 @@ function applyBranding(b = {}) {
   if (b.accentHoverColor) root.style.setProperty('--color-accent-hover', b.accentHoverColor)
 }
 
-export function SystemProvider({ systemId = 'cfb', children }) {
+export function SystemProvider({ systemId = import.meta.env.VITE_SYSTEM_ID ?? 'cfb', children }) {
   const [system, setSystem] = useState(CFB_MANIFEST)
 
   useEffect(() => {

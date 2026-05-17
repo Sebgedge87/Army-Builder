@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::OpenRead\\(\"c:\\\\Users\\\\sebas\\\\Source\\\\Repos\\\\Army Builder\\\\Classic Fantasy Battles Builder \\(2\\).zip\"\\).Entries | Select-Object FullName | Sort-Object FullName)"
+      "PowerShell(Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::OpenRead\\(\"c:\\\\Users\\\\sebas\\\\Source\\\\Repos\\\\Army Builder\\\\Classic Fantasy Battles Builder \\(2\\).zip\"\\).Entries | Select-Object FullName | Sort-Object FullName)",
+      "Bash(npm install *)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(git add *)"
     ]
   }
 }

@@ -42,7 +42,7 @@ What does NOT exist yet:
 ### Stack
 - **Frontend:** React 18 + Vite + React Router + (Tailwind OR styled-components — TBD)
 - **Backend:** Firebase (Firestore + Auth + Storage + Cloud Functions + Hosting)
-- **Build target:** SPA on Firebase Hosting
+- **Build target:** PWA (installable, offline-capable) on Firebase Hosting
 - **No** Babel-in-browser in production
 
 ### Build order (from `BUILD_PHASES.md`)
@@ -57,6 +57,16 @@ What does NOT exist yet:
 9. Phase 8 — System-agnostic refactor (only after Phase 7 is rock solid)
 
 **Recommended path to first working demo:** 0 → 1 → 2 → 4 → 5, then circle back for 3 → 6 → 7.
+
+### PWA requirements
+- Installable on iOS, Android, desktop (manifest + icons + service worker via `vite-plugin-pwa` + Workbox)
+- **Offline-first for read paths:** unit catalogue, saved armies, last-opened army must work with no network
+- Writes queue when offline and sync on reconnect (Firestore offline persistence via `persistentLocalCache`)
+- App shell cached on first load; updates via "new version available" toast
+- Manifest icons: 192×192, 512×512, plus maskable variant at `public/icons/`
+- **iOS Safari does NOT fire `beforeinstallprompt`** — show a custom "Add to Home Screen" hint with Share→Add illustration. Detect iOS in `InstallPrompt.jsx`, branch UI accordingly. Never try to programmatically install on iOS.
+- **Admin panel is online-only.** `/admin` routes must check `navigator.onLine` and block with an error screen when offline — bulk imports and image uploads are unsafe offline.
+- **iOS storage cap:** ~50 MB IndexedDB, evicted after 7 days inactivity. Cache only thumb/card image variants offline, never full-size.
 
 ### Layout
 Three builder layouts exist in the prototype. **Compact** is the default; Cards and Tactical are user-selectable via Settings.

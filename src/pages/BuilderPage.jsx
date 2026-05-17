@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import AppShell from '../components/shell/AppShell'
+import TopBar from '../components/shell/TopBar'
 import UnitBrowser from '../components/builder/UnitBrowser'
 import ArmyList from '../components/builder/ArmyList'
 import Stat from '../components/ui/Stat'
@@ -52,6 +53,7 @@ export default function BuilderPage() {
 
   return (
     <AppShell>
+      <TopBar />
       <div
         style={{
           flex: 1,

@@ -78,8 +78,19 @@ export default function AuthProvider({ children }) {
     await sendPasswordResetEmail(auth, email)
   }
 
+  async function refreshUser() {
+    if (!auth.currentUser) return
+    const snap = await getDoc(doc(db, 'users', auth.currentUser.uid))
+    setUser({
+      uid:         auth.currentUser.uid,
+      email:       auth.currentUser.email,
+      displayName: auth.currentUser.displayName,
+      isAdmin:     snap.exists() ? (snap.data().isAdmin ?? false) : false,
+    })
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, loginWithGoogle, logout, resetPassword }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, loginWithGoogle, logout, resetPassword, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

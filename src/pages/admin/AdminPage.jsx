@@ -4,9 +4,10 @@ import TopBar from '../../components/shell/TopBar'
 import RequireAdmin from '../../components/admin/RequireAdmin'
 
 const NAV = [
-  { to: '/admin',         label: 'Units Table', end: true },
-  { to: '/admin/import',  label: 'Import'                },
-  { to: '/admin/unit/new',label: 'New Unit'              },
+  { to: '/admin',          label: 'Units Table', end: true },
+  { to: '/admin/import',   label: 'Import'                },
+  { to: '/admin/unit/new', label: 'New Unit'              },
+  { to: '/admin/systems',  label: 'Systems'               },
 ]
 
 export default function AdminPage() {

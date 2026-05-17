@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { doc, getDoc, setDoc, addDoc, updateDoc, collection } from 'firebase/firestore'
 import { db } from '../services/firebase'
 import { useAuth } from './useAuth'
+import { useSystem } from '../context/SystemContext'
 import { validateArmy, checkAttachmentLegality } from '../lib/validation'
 import { applyBuffs } from '../lib/buffs'
 
-const CFB_SYSTEM = { pointLimit: 6000, systemId: 'cfb' }
-
 export function useArmy(armyId, allUnits) {
   const { user } = useAuth()
+  const system   = useSystem()
 
   const [name, setName]           = useState('New Army')
   const [faction, setFaction]     = useState('Evil')
@@ -103,11 +103,11 @@ export function useArmy(armyId, allUnits) {
   const save = useCallback(async () => {
     if (!user) return
     setSaving(true)
-    const { totalPoints } = validateArmy(entries, CFB_SYSTEM)
+    const { totalPoints } = validateArmy(entries, system)
     const payload = {
       userId:     user.uid,
       name,
-      systemId:   CFB_SYSTEM.systemId,
+      systemId:   system.systemId,
       faction,
       units: entries.map(({ instanceId, unitId, count, attachments, attachedTo }) => ({
         instanceId,
@@ -156,7 +156,7 @@ export function useArmy(armyId, allUnits) {
     [entries]
   )
 
-  const validation = useMemo(() => validateArmy(entries, CFB_SYSTEM), [entries])
+  const validation = useMemo(() => validateArmy(entries, system), [entries, system])
 
   return {
     name, setName,

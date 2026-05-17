@@ -9,11 +9,11 @@ import ShareModal from '../components/builder/ShareModal'
 import { useUnits } from '../hooks/useUnits'
 import { useDebounce } from '../hooks/useDebounce'
 import { useArmy } from '../hooks/useArmy'
-
-const POINT_LIMIT = 6000
+import { useSystem } from '../context/SystemContext'
 
 export default function BuilderPage() {
   const { armyId }                      = useParams()
+  const system                          = useSystem()
   const { units, loading: unitsLoading, error: unitsError } = useUnits()
 
   const {
@@ -46,9 +46,14 @@ export default function BuilderPage() {
     return ['All', ...t]
   }, [units])
 
+  const universalFactions = useMemo(() =>
+    new Set(system.factions.filter(f => f.availableToAll).map(f => f.name)),
+    [system]
+  )
+
   const filteredUnits = useMemo(() =>
     units.filter(u => {
-      if (u.faction !== faction && u.faction !== 'Mercenary') return false
+      if (u.faction !== faction && !universalFactions.has(u.faction)) return false
       if (selectedRace !== 'All' && u.race !== selectedRace) return false
       if (selectedType !== 'All') {
         const uTypes = u.types ?? (u.type ? [u.type] : [])
@@ -122,7 +127,7 @@ export default function BuilderPage() {
           onAttachUnit={attachUnit}
           onDetachUnit={detachUnit}
           totalPoints={totalPoints}
-          pointLimit={POINT_LIMIT}
+          pointLimit={system.rules?.pointLimit ?? 6000}
           validation={validation}
           saving={saving}
           onSave={save}
@@ -136,7 +141,7 @@ export default function BuilderPage() {
           faction={faction}
           entries={entries}
           totalPoints={totalPoints}
-          pointLimit={POINT_LIMIT}
+          pointLimit={system.rules?.pointLimit ?? 6000}
           armyId={armyId}
           isPublic={isPublic}
           shareToken={shareToken}

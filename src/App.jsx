@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import AuthProvider from './components/auth/AuthProvider'
 import { useAuth } from './hooks/useAuth'
 import RequireAuth from './components/RequireAuth'
+import { SystemProvider } from './context/SystemContext'
 
 import BuilderPage        from './pages/BuilderPage'
 import ArmiesPage         from './pages/ArmiesPage'
@@ -15,6 +16,8 @@ import AdminPage          from './pages/admin/AdminPage'
 import UnitsTablePage     from './pages/admin/UnitsTablePage'
 import ImportWizardPage   from './pages/admin/ImportWizardPage'
 import UnitFormPage       from './pages/admin/UnitFormPage'
+import SystemsPage        from './pages/admin/SystemsPage'
+import SystemWizardPage   from './pages/admin/SystemWizardPage'
 import HomePage           from './pages/HomePage'
 
 function GuestOnly({ children }) {
@@ -28,29 +31,33 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Public */}
-          <Route path="/"                  element={<HomePage />} />
-          <Route path="/style"             element={<StylePage />} />
-          <Route path="/army/:shareToken"  element={<PublicArmyPage />} />
+        <SystemProvider systemId="cfb">
+          <Routes>
+            {/* Public */}
+            <Route path="/"                  element={<HomePage />} />
+            <Route path="/style"             element={<StylePage />} />
+            <Route path="/army/:shareToken"  element={<PublicArmyPage />} />
 
-          {/* Guest-only — redirect logged-in users away */}
-          <Route path="/login"           element={<GuestOnly><LoginPage /></GuestOnly>} />
-          <Route path="/signup"          element={<GuestOnly><SignupPage /></GuestOnly>} />
-          <Route path="/forgot-password" element={<GuestOnly><ForgotPasswordPage /></GuestOnly>} />
+            {/* Guest-only — redirect logged-in users away */}
+            <Route path="/login"           element={<GuestOnly><LoginPage /></GuestOnly>} />
+            <Route path="/signup"          element={<GuestOnly><SignupPage /></GuestOnly>} />
+            <Route path="/forgot-password" element={<GuestOnly><ForgotPasswordPage /></GuestOnly>} />
 
-          {/* Protected */}
-          <Route path="/armies"           element={<RequireAuth><ArmiesPage /></RequireAuth>} />
-          <Route path="/builder"          element={<RequireAuth><BuilderPage /></RequireAuth>} />
-          <Route path="/builder/:armyId"  element={<RequireAuth><BuilderPage /></RequireAuth>} />
-          <Route path="/settings"         element={<RequireAuth><SettingsPage /></RequireAuth>} />
-          <Route path="/admin"            element={<RequireAuth><AdminPage /></RequireAuth>}>
-            <Route index                  element={<UnitsTablePage />} />
-            <Route path="import"          element={<ImportWizardPage />} />
-            <Route path="unit/new"        element={<UnitFormPage />} />
-            <Route path="unit/:unitId"    element={<UnitFormPage />} />
-          </Route>
-        </Routes>
+            {/* Protected */}
+            <Route path="/armies"           element={<RequireAuth><ArmiesPage /></RequireAuth>} />
+            <Route path="/builder"          element={<RequireAuth><BuilderPage /></RequireAuth>} />
+            <Route path="/builder/:armyId"  element={<RequireAuth><BuilderPage /></RequireAuth>} />
+            <Route path="/settings"         element={<RequireAuth><SettingsPage /></RequireAuth>} />
+            <Route path="/admin"            element={<RequireAuth><AdminPage /></RequireAuth>}>
+              <Route index                        element={<UnitsTablePage />} />
+              <Route path="import"               element={<ImportWizardPage />} />
+              <Route path="unit/new"             element={<UnitFormPage />} />
+              <Route path="unit/:unitId"         element={<UnitFormPage />} />
+              <Route path="systems"              element={<SystemsPage />} />
+              <Route path="systems/:systemId"   element={<SystemWizardPage />} />
+            </Route>
+          </Routes>
+        </SystemProvider>
       </AuthProvider>
     </BrowserRouter>
   )

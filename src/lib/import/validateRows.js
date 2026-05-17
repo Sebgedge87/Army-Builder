@@ -1,14 +1,15 @@
-const VALID_FACTIONS = new Set(['Good', 'Evil', 'Mercenary'])
+import { CFB_MANIFEST } from '../../context/SystemContext'
 
-export function validateRow(row) {
+export function validateRow(row, system = CFB_MANIFEST) {
   const errors   = []
   const warnings = []
 
   if (!String(row.name ?? '').trim()) errors.push('Name is required')
 
+  const validFactions = new Set(system.factions.map(f => f.name))
   const faction = String(row.faction ?? '').trim()
-  if (faction && !VALID_FACTIONS.has(faction)) {
-    errors.push(`Unknown faction "${faction}" — must be Good, Evil or Mercenary`)
+  if (faction && !validFactions.has(faction)) {
+    errors.push(`Unknown faction "${faction}" — must be ${[...validFactions].join(', ')}`)
   }
   if (!faction) warnings.push('No faction set')
 
@@ -17,27 +18,31 @@ export function validateRow(row) {
     errors.push(`Points must be a number, got "${pts}"`)
   }
 
-  const statKeys = ['movement', 'melee', 'ranged', 'defence', 'morale', 'wounds']
-  for (const k of statKeys) {
-    const v = row[`stats.${k}`] ?? row.stats?.[k]
+  for (const statDef of system.statDefinitions) {
+    const v = row[`stats.${statDef.id}`] ?? row.stats?.[statDef.id]
     if (v !== undefined && v !== '' && isNaN(Number(v))) {
-      warnings.push(`Stat "${k}" should be a number, got "${v}"`)
+      warnings.push(`Stat "${statDef.id}" should be a number, got "${v}"`)
     }
   }
 
   return { errors, warnings, isValid: errors.length === 0 }
 }
 
-export function validateRows(rows) {
-  return rows.map((row, i) => ({ rowIndex: i, ...validateRow(row) }))
+export function validateRows(rows, system = CFB_MANIFEST) {
+  return rows.map((row, i) => ({ rowIndex: i, ...validateRow(row, system) }))
 }
 
 /** Convert a mapped flat row to the canonical Firestore unit shape */
-export function normaliseRow(row) {
+export function normaliseRow(row, system = CFB_MANIFEST) {
   function num(v) { const n = Number(v); return isNaN(n) ? 0 : n }
   function list(v) {
     if (Array.isArray(v)) return v
     return String(v ?? '').split(/[;,]/).map(s => s.trim()).filter(Boolean)
+  }
+
+  const stats = {}
+  for (const statDef of system.statDefinitions) {
+    stats[statDef.id] = num(row[`stats.${statDef.id}`] ?? row.stats?.[statDef.id])
   }
 
   return {
@@ -48,14 +53,7 @@ export function normaliseRow(row) {
            : row.type  ? [String(row.type).trim()]
            : [],
     points:  row.points !== '' && row.points != null ? Number(row.points) : null,
-    stats: {
-      movement: num(row['stats.movement'] ?? row.stats?.movement),
-      melee:    num(row['stats.melee']    ?? row.stats?.melee),
-      ranged:   num(row['stats.ranged']   ?? row.stats?.ranged),
-      defence:  num(row['stats.defence']  ?? row.stats?.defence),
-      morale:   num(row['stats.morale']   ?? row.stats?.morale),
-      wounds:   num(row['stats.wounds']   ?? row.stats?.wounds),
-    },
+    stats,
     weapons:      Array.isArray(row.weapons)      ? row.weapons      : [],
     keywords:     list(row.keywords     ?? ''),
     specialRules: list(row.specialRules ?? ''),

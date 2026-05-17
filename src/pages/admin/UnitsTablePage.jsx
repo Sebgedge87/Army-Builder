@@ -1,18 +1,19 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc, setDoc } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../../services/firebase'
 import { uploadImage } from '../../services/storage'
+import { useSystem } from '../../context/SystemContext'
 import Button from '../../components/ui/Button'
 import { exportToJSON } from '../../lib/export/json'
 import { exportToText } from '../../lib/export/txt'
 
-const STAT_KEYS   = ['movement', 'melee', 'ranged', 'defence', 'morale', 'wounds']
-const STAT_LABELS = ['MOV', 'MEL', 'RNG', 'DEF', 'MOR', 'WND']
-const FACTIONS    = ['Good', 'Evil', 'Mercenary']
-
 export default function UnitsTablePage() {
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
+  const system    = useSystem()
+  const STAT_KEYS    = system.statDefinitions.map(s => s.id)
+  const STAT_LABELS  = system.statDefinitions.map(s => s.shortName)
+  const FACTIONS     = system.factions.map(f => f.name)
   const [units, setUnits]     = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch]   = useState('')

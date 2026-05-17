@@ -14,6 +14,13 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
+    // ── systems ───────────────────────────────────────────────────────
+    // Anyone can read system configs; only admins can write
+    match /systems/{systemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ── units ─────────────────────────────────────────────────────────
     // Anyone can read; only admins can write
     match /units/{unitId} {

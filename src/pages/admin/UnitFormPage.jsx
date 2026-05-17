@@ -1,28 +1,31 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { doc, getDoc, setDoc, addDoc, collection } from 'firebase/firestore'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../../services/firebase'
+import { useSystem } from '../../context/SystemContext'
 import Button from '../../components/ui/Button'
 
-const FACTIONS    = ['Good', 'Evil', 'Mercenary']
-const STAT_KEYS   = ['movement', 'melee', 'ranged', 'defence', 'morale', 'wounds']
-const STAT_LABELS = { movement: 'Movement (MOV)', melee: 'Melee (MEL)', ranged: 'Ranged (RNG)', defence: 'Defence (DEF)', morale: 'Morale (MOR)', wounds: 'Wounds (WND)' }
 const ATTACHMENT_ROLES = ['', 'host', 'attachment', 'both']
 
-const EMPTY = {
-  name: '', faction: 'Evil', race: '', types: [],
-  points: '',
-  stats: { movement: 0, melee: 0, ranged: 0, defence: 0, morale: 0, wounds: 0 },
-  weapons: [], keywords: [], specialRules: [],
-  flavorText: '',
-  images: { full: '', card: '', thumb: '', icon: '' },
-  attachable: null,
+function makeEmpty(system) {
+  const stats = Object.fromEntries(system.statDefinitions.map(s => [s.id, 0]))
+  return {
+    name: '', faction: system.factions[0]?.name ?? 'Evil', race: '', types: [],
+    points: '',
+    stats,
+    weapons: [], keywords: [], specialRules: [],
+    flavorText: '',
+    images: { full: '', card: '', thumb: '', icon: '' },
+    attachable: null,
+  }
 }
 
 export default function UnitFormPage() {
   const { unitId }   = useParams()
   const navigate     = useNavigate()
+  const system       = useSystem()
   const isNew        = !unitId || unitId === 'new'
+  const EMPTY        = makeEmpty(system)
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(!isNew)
@@ -36,6 +39,7 @@ export default function UnitFormPage() {
         setForm({
           ...EMPTY,
           ...d,
+          stats:      { ...EMPTY.stats, ...(d.stats ?? {}) },
           images:     { full: '', card: '', thumb: '', icon: '', ...(d.images ?? {}) },
           attachable: d.attachable ?? null,
         })
@@ -53,10 +57,9 @@ export default function UnitFormPage() {
     setSaving(true)
     const payload = {
       ...form,
-      types:        form.types,
-      points:       form.points !== '' ? Number(form.points) : null,
-      images:       Object.fromEntries(Object.entries(form.images).filter(([, v]) => v)),
-      attachable:   form.attachable,
+      points:     form.points !== '' ? Number(form.points) : null,
+      images:     Object.fromEntries(Object.entries(form.images).filter(([, v]) => v)),
+      attachable: form.attachable,
     }
     try {
       if (isNew) {
@@ -93,7 +96,7 @@ export default function UnitFormPage() {
           </Field>
           <Field label="Faction" style={{ flex: 1 }}>
             <select value={form.faction} onChange={e => upd({ faction: e.target.value })} style={selectStyle}>
-              {FACTIONS.map(f => <option key={f} value={f}>{f}</option>)}
+              {system.factions.map(f => <option key={f.id} value={f.name}>{f.name}</option>)}
             </select>
           </Field>
         </Row>
@@ -113,9 +116,9 @@ export default function UnitFormPage() {
       {/* ── Stats ── */}
       <Section label="Stats">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)' }}>
-          {STAT_KEYS.map(k => (
-            <Field key={k} label={STAT_LABELS[k]}>
-              <TI type="number" value={form.stats[k]} onChange={v => updStat(k, v)} min={0} />
+          {system.statDefinitions.map(s => (
+            <Field key={s.id} label={s.label ?? `${s.name} (${s.shortName})`}>
+              <TI type="number" value={form.stats[s.id] ?? 0} onChange={v => updStat(s.id, v)} min={0} />
             </Field>
           ))}
         </div>
@@ -261,7 +264,4 @@ const inputStyle = {
   boxSizing: 'border-box',
 }
 
-const selectStyle = {
-  ...inputStyle,
-  cursor: 'pointer',
-}
+const selectStyle = { ...inputStyle, cursor: 'pointer' }

@@ -2,28 +2,26 @@ import { useState } from 'react'
 import { collection, doc, setDoc, addDoc, deleteDoc, getDocs } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../../services/firebase'
+import { useSystem } from '../../context/SystemContext'
 import Button from '../../components/ui/Button'
 import { parseCSV, autoDetectMapping, applyMapping } from '../../lib/import/parseCSV'
 import { validateRows, normaliseRow } from '../../lib/import/validateRows'
 import { computeDiff } from '../../lib/import/diff'
 
-const UNIT_FIELDS = [
-  { key: 'ignore',           label: '— Skip —' },
-  { key: 'name',             label: 'Name' },
-  { key: 'faction',          label: 'Faction' },
-  { key: 'race',             label: 'Race' },
-  { key: 'type',             label: 'Type' },
-  { key: 'points',           label: 'Points' },
-  { key: 'stats.movement',   label: 'MOV' },
-  { key: 'stats.melee',      label: 'MEL' },
-  { key: 'stats.ranged',     label: 'RNG' },
-  { key: 'stats.defence',    label: 'DEF' },
-  { key: 'stats.morale',     label: 'MOR' },
-  { key: 'stats.wounds',     label: 'WND' },
-  { key: 'keywords',         label: 'Keywords' },
-  { key: 'specialRules',     label: 'Special Rules' },
-  { key: 'flavorText',       label: 'Flavor Text' },
-]
+function buildUnitFields(system) {
+  return [
+    { key: 'ignore',       label: '— Skip —'     },
+    { key: 'name',         label: 'Name'          },
+    { key: 'faction',      label: 'Faction'       },
+    { key: 'race',         label: 'Race'          },
+    { key: 'type',         label: 'Type'          },
+    { key: 'points',       label: 'Points'        },
+    ...system.statDefinitions.map(s => ({ key: `stats.${s.id}`, label: s.shortName })),
+    { key: 'keywords',     label: 'Keywords'      },
+    { key: 'specialRules', label: 'Special Rules' },
+    { key: 'flavorText',   label: 'Flavor Text'   },
+  ]
+}
 
 const INIT = {
   step:       1,
@@ -39,8 +37,10 @@ const INIT = {
 }
 
 export default function ImportWizardPage() {
-  const navigate = useNavigate()
-  const [s, setS] = useState(INIT)
+  const navigate   = useNavigate()
+  const system     = useSystem()
+  const UNIT_FIELDS = buildUnitFields(system)
+  const [s, setS]  = useState(INIT)
   const upd = patch => setS(prev => ({ ...prev, ...patch }))
 
   // ── Step 1: source selection ─────────────────────────────────────
@@ -75,9 +75,9 @@ export default function ImportWizardPage() {
   // ── Step 3: validate ─────────────────────────────────────────────
   function runValidation(rows) {
     const normed = s.source === 'csv'
-      ? applyMapping(rows, s.fieldMap).map(normaliseRow)
-      : rows.map(normaliseRow)
-    const results = validateRows(normed)
+      ? applyMapping(rows, s.fieldMap).map(r => normaliseRow(r, system))
+      : rows.map(r => normaliseRow(r, system))
+    const results = validateRows(normed, system)
     upd({ mappedRows: normed, results, step: 3 })
   }
 
@@ -151,9 +151,10 @@ export default function ImportWizardPage() {
         <Step4
           rows={s.mappedRows}
           results={s.results}
+          system={system}
           onChange={(i, field, val) => {
             const updated = s.mappedRows.map((r, j) => j === i ? { ...r, [field]: val } : r)
-            const results = validateRows(updated)
+            const results = validateRows(updated, system)
             upd({ mappedRows: updated, results })
           }}
           onBack={() => upd({ step: 3 })}
@@ -310,7 +311,7 @@ function Step3({ results, onBack, onNext }) {
   )
 }
 
-function Step4({ rows, results, onChange, onBack, onNext }) {
+function Step4({ rows, results, system, onChange, onBack, onNext }) {
   const errCount = results.filter(r => !r.isValid).length
   return (
     <div>
@@ -324,7 +325,7 @@ function Step4({ rows, results, onChange, onBack, onNext }) {
         <table style={{ borderCollapse: 'collapse', fontSize: 'var(--font-size-xs)', minWidth: 900 }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--color-border)', background: 'var(--color-bg-surface)' }}>
-              {['#', 'Name', 'Faction', 'Race', 'Types', 'Pts', 'MOV', 'MEL', 'RNG', 'DEF', 'MOR', 'WND'].map(h => (
+              {['#', 'Name', 'Faction', 'Race', 'Types', 'Pts', ...system.statDefinitions.map(s => s.shortName)].map(h => (
                 <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 600, color: 'var(--color-text-secondary)', whiteSpace: 'nowrap' }}>{h}</th>
               ))}
             </tr>
@@ -349,9 +350,9 @@ function Step4({ rows, results, onChange, onBack, onNext }) {
                   <td style={{ padding: '4px 8px' }}>{makeInput('race')}</td>
                   <td style={{ padding: '4px 8px' }}>{makeInput('types')}</td>
                   <td style={{ padding: '4px 8px' }}>{makeInput('points', 'number')}</td>
-                  {['movement','melee','ranged','defence','morale','wounds'].map(k => (
-                    <td key={k} style={{ padding: '4px 8px' }}>
-                      <input type="number" value={row.stats?.[k] ?? ''} onChange={e => onChange(i, `stats.${k}`, Number(e.target.value))} style={{ width: 36, background: 'transparent', border: 'none', borderBottom: '1px solid var(--color-border)', color: 'var(--color-text-primary)', fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-xs)', padding: '1px 2px', outline: 'none' }} />
+                  {system.statDefinitions.map(st => (
+                    <td key={st.id} style={{ padding: '4px 8px' }}>
+                      <input type="number" value={row.stats?.[st.id] ?? ''} onChange={e => onChange(i, `stats.${st.id}`, Number(e.target.value))} style={{ width: 36, background: 'transparent', border: 'none', borderBottom: '1px solid var(--color-border)', color: 'var(--color-text-primary)', fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-xs)', padding: '1px 2px', outline: 'none' }} />
                     </td>
                   ))}
                 </tr>

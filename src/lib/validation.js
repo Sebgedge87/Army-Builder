@@ -1,6 +1,10 @@
-const CFB_DEFAULTS = { pointLimit: 6000 }
+export function validateArmy(entries, system = {}) {
+  const pointLimit = system.rules?.pointLimit ?? system.pointLimit ?? 6000
+  const universalFactions = new Set(
+    (system.factions ?? []).filter(f => f.availableToAll).map(f => f.name)
+  )
+  if (universalFactions.size === 0) universalFactions.add('Mercenary')
 
-export function validateArmy(entries, system = CFB_DEFAULTS) {
   const errors = []
   const warnings = []
   const totalPoints = entries.reduce((sum, e) => sum + (e.unit?.points || 0), 0)
@@ -10,12 +14,12 @@ export function validateArmy(entries, system = CFB_DEFAULTS) {
     warnings.push('Army has no units')
   }
 
-  if (totalPoints > system.pointLimit) {
-    errors.push(`${totalPoints}pts exceeds the ${system.pointLimit}pt limit`)
+  if (totalPoints > pointLimit) {
+    errors.push(`${totalPoints}pts exceeds the ${pointLimit}pt limit`)
   }
 
   const factions = [...new Set(
-    topLevel.map(e => e.unit?.faction).filter(f => f && f !== 'Mercenary')
+    topLevel.map(e => e.unit?.faction).filter(f => f && !universalFactions.has(f))
   )]
   if (factions.length > 1) {
     errors.push(`Mixed factions: ${factions.join(', ')}`)

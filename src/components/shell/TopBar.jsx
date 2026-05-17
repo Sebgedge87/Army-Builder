@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { useSystem } from '../../context/SystemContext'
 import Button from '../ui/Button'
 
 const NAV_LINKS = [
@@ -11,6 +12,7 @@ const NAV_LINKS = [
 export default function TopBar() {
   const { user, logout } = useAuth()
   const navigate         = useNavigate()
+  const system           = useSystem()
 
   async function handleLogout() {
     await logout()
@@ -32,7 +34,7 @@ export default function TopBar() {
     >
       {/* Logo */}
       <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, letterSpacing: '-0.5px', flexShrink: 0 }}>
-        ⚔ CFB
+        ⚔ {system.shortName ?? system.name}
       </span>
 
       {/* Nav links */}

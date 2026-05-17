@@ -1,0 +1,498 @@
+[
+  {
+    "id": "orc_light_infantry",
+    "name": "Orc Light Infantry",
+    "faction": "Evil",
+    "race": "Orcs",
+    "type": "Infantry",
+    "points": 73,
+    "baseSize": "40mm x 20mm",
+    "stats": {
+      "movement": 7,
+      "melee": 4,
+      "ranged": 10,
+      "defence": 6,
+      "morale": 6,
+      "wounds": 2,
+      "modifier": 0,
+      "quantity": 0
+    },
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 6,
+        "morale": 6,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 0
+      },
+      {
+        "movement": 14,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 16,
+        "morale": 8,
+        "wounds": 10,
+        "modifier": 54,
+        "quantity": 9
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Orcish Swords",
+        "range": "Melee",
+        "attacks": 4,
+        "damage": 1,
+        "armourPiercing": "-",
+        "pointsCost": 11
+      }
+    ],
+    "keywords": [
+      "Evil",
+      "Orcs",
+      "Infantry"
+    ],
+    "description": "Orcish Swords"
+  },
+  {
+    "id": "orc_heavy_infantry",
+    "name": "Orc Heavy Infantry",
+    "faction": "Mercenary",
+    "race": "",
+    "type": "Infantry",
+    "points": 0,
+    "baseSize": "",
+    "stats": {
+      "movement": 6,
+      "melee": 4,
+      "ranged": 10,
+      "defence": 5,
+      "morale": 5,
+      "wounds": 2,
+      "modifier": 0,
+      "quantity": 0
+    },
+    "variants": [
+      {
+        "movement": 6,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 5,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 6,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 5,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 6,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 5,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 0
+      },
+      {
+        "movement": 12,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 20,
+        "morale": 10,
+        "wounds": 10,
+        "modifier": 58,
+        "quantity": 9
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Orcish Swords",
+        "range": "Melee",
+        "attacks": 4,
+        "damage": 1,
+        "armourPiercing": "-",
+        "pointsCost": 11
+      }
+    ],
+    "keywords": [],
+    "description": "Orcish Swords"
+  },
+  {
+    "id": "armoured",
+    "name": "Armoured",
+    "faction": "Evil",
+    "race": "Orcs",
+    "type": "Infantry",
+    "points": 74,
+    "baseSize": "40mm x 20mm",
+    "stats": {},
+    "variants": [],
+    "weapons": [],
+    "keywords": [
+      "Evil",
+      "Orcs",
+      "Infantry"
+    ],
+    "description": ""
+  },
+  {
+    "id": "orc_axes",
+    "name": "Orc Axes",
+    "faction": "Evil",
+    "race": "Orcs",
+    "type": "Infantry",
+    "points": 77,
+    "baseSize": "40mm x 20mm",
+    "stats": {
+      "movement": 7,
+      "melee": 4,
+      "ranged": 10,
+      "defence": 6,
+      "morale": 5,
+      "wounds": 2,
+      "modifier": 0,
+      "quantity": 0
+    },
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 6,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 0
+      },
+      {
+        "movement": 14,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 16,
+        "morale": 10,
+        "wounds": 10,
+        "modifier": 56,
+        "quantity": 9
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Orcish Axes",
+        "range": "Melee",
+        "attacks": 2,
+        "damage": 1,
+        "armourPiercing": 2,
+        "pointsCost": 15
+      }
+    ],
+    "keywords": [
+      "Evil",
+      "Orcs",
+      "Infantry"
+    ],
+    "description": "Orcish Axes"
+  },
+  {
+    "id": "spear_orcs",
+    "name": "Spear Orcs",
+    "faction": "Evil",
+    "race": "Orcs",
+    "type": "Infantry",
+    "points": 71,
+    "baseSize": "40mm x 20mm",
+    "stats": {
+      "movement": 7,
+      "melee": 4,
+      "ranged": 10,
+      "defence": 6,
+      "morale": 6,
+      "wounds": 2,
+      "modifier": 0,
+      "quantity": 0
+    },
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 4,
+        "ranged": 10,
+        "defence": 6,
+        "morale": 6,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 0
+      },
+      {
+        "movement": 14,
+        "melee": 6,
+        "ranged": 0,
+        "defence": 16,
+        "morale": 8,
+        "wounds": 10,
+        "modifier": 54,
+        "quantity": 9
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Orcish Spears",
+        "range": "Melee",
+        "attacks": 3,
+        "damage": 1,
+        "armourPiercing": 1,
+        "pointsCost": 9
+      }
+    ],
+    "keywords": [
+      "Evil",
+      "Orcs",
+      "Infantry"
+    ],
+    "description": "Orcish Spears"
+  },
+  {
+    "id": "orc_archers",
+    "name": "Orc Archers",
+    "faction": "Mercenary",
+    "race": "",
+    "type": "Infantry",
+    "points": 0,
+    "baseSize": "",
+    "stats": {
+      "movement": 7,
+      "melee": 8,
+      "ranged": 5,
+      "defence": 6,
+      "morale": 6,
+      "wounds": 2,
+      "modifier": 0,
+      "quantity": 0
+    },
+    "variants": [
+      {
+        "movement": 7,
+        "melee": 8,
+        "ranged": 5,
+        "defence": 6,
+        "morale": 6,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 2,
+        "ranged": 5,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 7,
+        "melee": 2,
+        "ranged": 5,
+        "defence": 4,
+        "morale": 4,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 0
+      },
+      {
+        "movement": 14,
+        "melee": 2,
+        "ranged": 7.5,
+        "defence": 16,
+        "morale": 8,
+        "wounds": 10,
+        "modifier": 57.5,
+        "quantity": 9
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Orcish Bow",
+        "range": "10\"/20\"",
+        "attacks": 3,
+        "damage": 1,
+        "armourPiercing": "-",
+        "pointsCost": 14
+      }
+    ],
+    "keywords": [],
+    "description": "Orcish Bow"
+  },
+  {
+    "id": "orcish_knife",
+    "name": "Orcish Knife",
+    "faction": "Evil",
+    "race": "Orcs",
+    "type": "Infantry, Ranged",
+    "points": 82.5,
+    "baseSize": "40mm x 20mm",
+    "stats": {},
+    "variants": [],
+    "weapons": [],
+    "keywords": [
+      "Evil",
+      "Orcs",
+      "Infantry",
+      "Ranged"
+    ],
+    "description": ""
+  },
+  {
+    "id": "orc_warg_rider_skirmishers",
+    "name": "Orc Warg Rider Skirmishers",
+    "faction": "Mercenary",
+    "race": "",
+    "type": "Infantry",
+    "points": 0,
+    "baseSize": "",
+    "stats": {
+      "movement": 10,
+      "melee": 5,
+      "ranged": 6,
+      "defence": 6,
+      "morale": 5,
+      "wounds": 2,
+      "modifier": 0,
+      "quantity": 0
+    },
+    "variants": [
+      {
+        "movement": 10,
+        "melee": 5,
+        "ranged": 6,
+        "defence": 6,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 10,
+        "melee": 5,
+        "ranged": 4,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 0,
+        "quantity": 0
+      },
+      {
+        "movement": 10,
+        "melee": 5,
+        "ranged": 4,
+        "defence": 4,
+        "morale": 5,
+        "wounds": 2,
+        "modifier": 1,
+        "quantity": 0
+      }
+    ],
+    "weapons": [],
+    "keywords": [],
+    "description": ""
+  },
+  {
+    "id": "orcish_bow",
+    "name": "Orcish Bow",
+    "faction": "Evil",
+    "race": "Orcs",
+    "type": "Cavalry, Ranged",
+    "points": 92,
+    "baseSize": "20mm x 40mm",
+    "stats": {},
+    "variants": [],
+    "weapons": [
+      {
+        "name": "Orcish Sword",
+        "range": "Melee",
+        "attacks": 4,
+        "damage": 1,
+        "armourPiercing": "-",
+        "pointsCost": 11
+      }
+    ],
+    "keywords": [
+      "Evil",
+      "Orcs",
+      "Cavalry",
+      "Ranged"
+    ],
+    "description": "Orcish Sword"
+  }
+]
